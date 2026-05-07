@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陕西地图 - 数智轻行 智游三秦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        natural: '#00B42A',
+                        cultural: '#722ED1',
+                        redtour: '#F53F3F'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { font-size: 18px; }
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(22, 93, 255, 0.15);
+        }
+        .map-container {
+            position: relative;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .city-marker {
+            position: absolute;
+            cursor: pointer;
+            animation: pulse-marker 2s ease-in-out infinite;
+        }
+        @keyframes pulse-marker {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        .data-bar {
+            transition: width 1s ease-out;
+        }
+        .info-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .region-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+
+    <!-- 顶部标题区 -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-indigo-600 rounded-xl flex items-center justify-center text-white">
+                        <i class="fa-solid fa-compass"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800">陕西文旅导航</h1>
+                        <p class="text-xs text-gray-500">信息可视化展示</p>
+                    </div>
+                </a>
+                <nav class="hidden md:flex gap-4">
+                    <a href="index.html" class="text-sm text-gray-600 hover:text-primary">首页</a>
+                    <a href="about.html" class="text-sm text-gray-600 hover:text-primary">关于</a>
+                    <a href="attractions.html" class="text-sm text-primary font-medium">景点</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- 页面标题 -->
+        <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-cultural to-secondary bg-clip-text text-transparent mb-3">
+                陕西省文旅数据概览
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                基于地理信息的数据可视化，带您全方位了解三秦大地
+            </p>
+        </div>
+
+        <!-- 核心统计卡片 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <!-- 精选景点 -->
+            <div class="stat-card info-card rounded-2xl p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-natural/10 to-natural/20 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-mountain-sun text-natural text-xl"></i>
+                    </div>
+                    <span class="text-xs text-green-500 bg-green-50 px-2 py-1 rounded-full">+20%</span>
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">10+</div>
+                <div class="text-sm text-gray-500">精选景点</div>
+                <div class="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="data-bar h-full bg-gradient-to-r from-natural to-green-400 rounded-full" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <!-- 覆盖城市 -->
+            <div class="stat-card info-card rounded-2xl p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-city text-primary text-xl"></i>
+                    </div>
+                    <span class="text-xs text-blue-500 bg-blue-50 px-2 py-1 rounded-full">全覆盖</span>
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">9</div>
+                <div class="text-sm text-gray-500">覆盖地市</div>
+                <div class="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="data-bar h-full bg-gradient-to-r from-primary to-blue-400 rounded-full" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <!-- 特色美食 -->
+            <div class="stat-card info-card rounded-2xl p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-secondary/10 to-secondary/20 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-bowl-food text-secondary text-xl"></i>
+                    </div>
+                    <span class="text-xs text-orange-500 bg-orange-50 px-2 py-1 rounded-full">热门</span>
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">50+</div>
+                <div class="text-sm text-gray-500">特色美食</div>
+                <div class="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="data-bar h-full bg-gradient-to-r from-secondary to-orange-400 rounded-full" style="width: 92%"></div>
+                </div>
+            </div>
+
+            <!-- 文化遗产 -->
+            <div class="stat-card info-card rounded-2xl p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-cultural/10 to-cultural/20 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-landmark-dome text-cultural text-xl"></i>
+                    </div>
+                    <span class="text-xs text-purple-500 bg-purple-50 px-2 py-1 rounded-full">世界级</span>
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">100+</div>
+                <div class="text-sm text-gray-500">文化遗产</div>
+                <div class="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="data-bar h-full bg-gradient-to-r from-cultural to-purple-400 rounded-full" style="width: 78%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地图与数据可视化区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+            
+            <!-- 地图主体 -->
+            <div class="lg:col-span-2">
+                <div class="map-container p-8 shadow-lg">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-800">
+                            <i class="fa-solid fa-map-location-dot text-primary mr-2"></i>陕西省地理分布
+                        </h3>
+                        <div class="flex gap-2">
+                            <span class="region-tag bg-red-100 text-red-700">陕北</span>
+                            <span class="region-tag bg-yellow-100 text-yellow-700">关中</span>
+                            <span class="region-tag bg-green-100 text-green-700">陕南</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 地图图片 -->
+                    <div class="relative bg-white rounded-xl p-4 shadow-inner">
+                        <img src="../img/陕西.jpg" alt="陕西省地图" class="w-full h-auto rounded-lg">
+                        
+                        <!-- 城市标记点 -->
+                        <div class="city-marker" style="top: 35%; left: 52%;" title="西安（省会）">
+                            <div class="relative group">
+                                <div class="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
+                                <div class="absolute left-6 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                    <div class="font-bold text-gray-800">西安市</div>
+                                    <div class="text-xs text-gray-500">省会 · 13朝古都</div>
+                                </div>
+                                <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-red-600 whitespace-nowrap">西安</span>
+                            </div>
+                        </div>
+
+                        <div class="city-marker" style="top: 15%; left: 45%;" title="延安">
+                            <div class="relative group">
+                                <div class="w-3 h-3 bg-orange-500 rounded-full border-2 border-white shadow-md"></div>
+                                <div class="absolute left-5 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                    <div class="font-bold text-gray-800">延安市</div>
+                                    <div class="text-xs text-gray-500">革命圣地 · 黄土风情</div>
+                                </div>
+                                <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-orange-600 whitespace-nowrap">延安</span>
+                            </div>
+                        </div>
+
+                        <div class="city-marker" style="top: 55%; left: 48%;" title="汉中">
+                            <div class="relative group">
+                                <div class="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-md"></div>
+                                <div class="absolute left-5 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                    <div class="font-bold text-gray-800">汉中市</div>
+                                    <div class="text-xs text-gray-500">秦巴明珠 · 西北小江南</div>
+                                </div>
+                                <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-green-600 whitespace-nowrap">汉中</span>
+                            </div>
+                        </div>
+
+                        <div class="city-marker" style="top: 38%; left: 62%;" title="渭南">
+                            <div class="relative group">
+                                <div class="w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-md"></div>
+                                <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-blue-600 whitespace-nowrap">渭南</span>
+                            </div>
+                        </div>
+
+                        <div class="city-marker" style="top: 28%; left: 68%;" title="榆林">
+                            <div class="relative group">
+                                <div class="w-3 h-3 bg-yellow-600 rounded-full border-2 border-white shadow-md"></div>
+                                <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-yellow-700 whitespace-nowrap">榆林</span>
+                            </div>
+                        </div>
+
+                        <div class="city-marker" style="top: 70%; left: 58%;" title="安康">
+                            <div class="relative group">
+                                <div class="w-3 h-3 bg-teal-500 rounded-full border-2 border-white shadow-md"></div>
+                                <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-teal-600 whitespace-nowrap">安康</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 图例 -->
+                    <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-full"></span>省会城市</span>
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 bg-orange-500 rounded-full"></span>陕北地区</span>
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 bg-green-500 rounded-full"></span>陕南地区</span>
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 bg-blue-500 rounded-full"></span>关中地区</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧数据面板 -->
+            <div class="space-y-6">
+                
+                <!-- 三大区域对比 -->
+                <div class="info-card rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <h3 class="font-bold text-gray-800 mb-4">
+                        <i class="fa-solid fa-chart-pie text-cultural mr-2"></i>三大文化区域
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- 陕北 -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-700">🏔️ 陕北黄土高原</span>
+                                <span class="text-red-600 font-medium">35%</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-red-400 to-red-500 rounded-full data-bar" style="width: 35%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">延安、榆林 · 革命文化与边塞风情</p>
+                        </div>
+
+                        <!-- 关中 -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-700">🏛️ 关中平原</span>
+                                <span class="text-yellow-600 font-medium">45%</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full data-bar" style="width: 45%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">西安、咸阳、宝鸡等 · 历史古都核心区</p>
+                        </div>
+
+                        <!-- 陕南 -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-700">🌿 陕南山地</span>
+                                <span class="text-green-600 font-medium">20%</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full data-bar" style="width: 20%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">汉中、安康、商洛 · 秦巴生态与楚文化</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 景点类型分布 -->
+                <div class="info-card rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <h3 class="font-bold text-gray-800 mb-4">
+                        <i class="fa-solid fa-layer-group text-primary mr-2"></i>景点类型分布
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-red-50 rounded-xl p-3 text-center">
+                            <i class="fa-solid fa-monument text-red-500 text-2xl mb-2"></i>
+                            <div class="text-lg font-bold text-gray-800">30%</div>
+                            <div class="text-xs text-gray-500">历史古迹</div>
+                        </div>
+                        <div class="bg-green-50 rounded-xl p-3 text-center">
+                            <i class="fa-solid fa-tree text-green-500 text-2xl mb-2"></i>
+                            <div class="text-lg font-bold text-gray-800">25%</div>
+                            <div class="text-xs text-gray-500">自然风光</div>
+                        </div>
+                        <div class="bg-purple-50 rounded-xl p-3 text-center">
+                            <i class="fa-solid fa-masks-theater text-purple-500 text-2xl mb-2"></i>
+                            <div class="text-lg font-bold text-gray-800">25%</div>
+                            <div class="text-xs text-gray-500">文化场馆</div>
+                        </div>
+                        <div class="bg-orange-50 rounded-xl p-3 text-center">
+                            <i class="fa-solid fa-flag text-orange-500 text-2xl mb-2"></i>
+                            <div class="text-lg font-bold text-gray-800">20%</div>
+                            <div class="text-xs text-gray-500">红色旅游</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 底部详细信息卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- 热门景点排行 -->
+            <div class="info-card rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-4">
+                    <i class="fa-solid fa-fire text-red-500 mr-2"></i>热门景点 TOP5
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold rounded-full flex items-center justify-center">1</span>
+                        <img src="../img/兵马俑.jpg" alt="兵马俑" class="w-10 h-10 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-800">秦始皇兵马俑</div>
+                            <div class="text-xs text-gray-500">西安 · 世界遗产</div>
+                        </div>
+                        <span class="text-xs text-red-500 font-medium">★★★★★</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="w-6 h-6 bg-gradient-to-r from-gray-300 to-gray-400 text-white text-xs font-bold rounded-full flex items-center justify-center">2</span>
+                        <img src="../img/华山.jpg" alt="华山" class="w-10 h-10 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-800">华山</div>
+                            <div class="text-xs text-gray-500">渭南 · 五岳之一</div>
+                        </div>
+                        <span class="text-xs text-red-500 font-medium">★★★★★</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="w-6 h-6 bg-gradient-to-r from-orange-300 to-orange-400 text-white text-xs font-bold rounded-full flex items-center justify-center">3</span>
+                        <img src="../img/大雁塔.jpg" alt="大雁塔" class="w-10 h-10 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-800">大雁塔</div>
+                            <div class="text-xs text-gray-500">西安 · 唐代建筑</div>
+                        </div>
+                        <span class="text-xs text-red-500 font-medium">★★★★☆</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="w-6 h-6 bg-gray-200 text-gray-600 text-xs font-bold rounded-full flex items-center justify-center">4</span>
+                        <img src="../img/壶口瀑布.jpg" alt="壶口瀑布" class="w-10 h-10 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-800">壶口瀑布</div>
+                            <div class="text-xs text-gray-500">延安 · 黄河奇观</div>
+                        </div>
+                        <span class="text-xs text-red-500 font-medium">★★★★☆</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="w-6 h-6 bg-gray-200 text-gray-600 text-xs font-bold rounded-full flex items-center justify-center">5</span>
+                        <img src="../img/乾陵.jpg" alt="乾陵" class="w-10 h-10 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-800">乾陵</div>
+                            <div class="text-xs text-gray-500">咸阳 · 唐帝陵</div>
+                        </div>
+                        <span class="text-xs text-red-500 font-medium">★★★★☆</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 必尝美食 -->
+            <div class="info-card rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-4">
+                    <i class="fa-solid fa-utensils text-secondary mr-2"></i>必尝特色美食
+                </h3>
+                <div class="space-y-3">
+                    <div class="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-3 border-l-4 border-secondary">
+                        <div class="font-medium text-gray-800">肉夹馍 🥙</div>
+                        <div class="text-xs text-gray-500 mt-1">陕西汉堡，腊汁肉香浓郁</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-3 border-l-4 border-yellow-500">
+                        <div class="font-medium text-gray-800">羊肉泡馍 🍜</div>
+                        <div class="text-xs text-gray-500 mt-1">掰馍体验，鲜香醇厚</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-3 border-l-4 border-red-400">
+                        <div class="font-medium text-gray-800">凉皮 🌶️</div>
+                        <div class="text-xs text-gray-500 mt-1">爽滑劲道，油泼辣子香</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-3 border-l-4 border-amber-500">
+                        <div class="font-medium text-gray-800">biangbiang面 🍝</div>
+                        <div class="text-xs text-gray-500 mt-1">裤带宽面，劲道十足</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-pink-50 to-red-50 rounded-xl p-3 border-l-4 border-pink-400">
+                        <div class="font-medium text-gray-800">葫芦鸡 🍗</div>
+                        <div class="text-xs text-gray-500 mt-1">西安名菜，外酥里嫩</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 旅游小贴士 -->
+            <div class="info-card rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-4">
+                    <i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i>旅游贴士
+                </h3>
+                
+                <div class="space-y-4">
+                    <!-- 最佳旅行时间 -->
+                    <div class="bg-blue-50 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-calendar-days text-primary"></i>
+                            <span class="font-medium text-gray-800">最佳旅行时间</span>
+                        </div>
+                        <p class="text-sm text-gray-600">春秋两季（3-5月、9-11月）气候宜人，适合游览。</p>
+                    </div>
+
+                    <!-- 交通建议 -->
+                    <div class="bg-green-50 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-plane-departure text-natural"></i>
+                            <span class="font-medium text-gray-800">交通建议</span>
+                        </div>
+                        <p class="text-sm text-gray-600">西安咸阳国际机场为主要枢纽，高铁网络发达，可直达各大城市。</p>
+                    </div>
+
+                    <!-- 住宿推荐 -->
+                    <div class="bg-purple-50 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-bed text-cultural"></i>
+                            <span class="font-medium text-gray-800">住宿推荐</span>
+                        </div>
+                        <p class="text-sm text-gray-600">建议住在西安钟楼附近，交通便利，周边美食众多。</p>
+                    </div>
+
+                    <!-- 特别提醒 -->
+                    <div class="bg-red-50 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-triangle-exclamation text-redtour"></i>
+                            <span class="font-medium text-gray-800">特别提醒</span>
+                        </div>
+                        <p class="text-sm text-gray-600">兵马俑等热门景点建议提前网上预约门票，避免排队。</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-8 mt-16">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-400">© 2026 数智轻行 智游三秦 | 陕西文旅轻量化导航服务平台</p>
+        </div>
+    </footer>
+
+    <script>
+        // 数据条动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.data-bar');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300);
+            });
+        });
+
+        // 城市标记点击效果
+        document.querySelectorAll('.city-marker').forEach(marker => {
+            marker.addEventListener('click', function() {
+                alert(this.getAttribute('title'));
+            });
+        });
+    </script>
+
+</body>
+</html>

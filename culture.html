@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文化特色 - 数智轻行 智游三秦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#667eea', secondary: '#764ba2', accent: '#f093fb' }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        html { font-size: 18px; }
+        .hero-gradient { background: transparent; position: relative; overflow: hidden; }
+        .hero-gradient::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.3; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        .card-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .card-hover:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.35); }
+        .heritage-icon { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .modal-overlay { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(50px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .nav-glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+        .float-animation { animation: float 3s ease-in-out infinite; }
+        .feature-card { position: relative; overflow: hidden; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, #667eea, #764ba2); }
+    </style>
+</head>
+<body class="min-h-screen" style="background: url('img/陕西.jpg') center center / cover fixed no-repeat;">
+    <div class="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div>
+    <header class="nav-glass sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-compass text-white text-xl"></i></div>
+                    <div><div class="font-bold text-dark text-lg">数智轻行 智游三秦</div><div class="text-xs text-gray-500">轻量 · 便捷 · 精准</div></div>
+                </a>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="about.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">关于陕西</a>
+                    <a href="culture.html" class="text-sm gradient-text font-bold">文化特色</a>
+                    <a href="attractions.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">美食推荐</a>
+                    <a href="guide.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">联系我们</a>
+                    <div class="flex items-center gap-3 ml-4">
+                        <a href="auth.html" class="px-5 py-2.5 border-2 border-purple-500 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-50 transition-all">登录</a>
+                        <a href="auth.html" class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all">注册</a>
+                    </div>
+                </nav>
+                <button class="md:hidden text-gray-600" id="mobileMenuBtn"><i class="fa-solid fa-bars text-2xl"></i></button>
+            </div>
+            <nav class="md:hidden mt-4 pb-4 border-t border-gray-100 pt-4" id="mobileMenu" style="display: none;">
+                <div class="flex flex-col gap-3">
+                    <a href="about.html" class="text-sm text-gray-600 py-2">关于陕西</a>
+                    <a href="culture.html" class="text-sm gradient-text font-bold py-2">文化特色</a>
+                    <a href="attractions.html" class="text-sm text-gray-600 py-2">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 py-2">美食推荐</a>
+                    <a href="guide.html" class="text-sm text-gray-600 py-2">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 py-2">联系我们</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero-gradient text-gray-900 py-12 relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2"><i class="fa-solid fa-book-open mr-3"></i>文化特色</h1>
+            <p class="text-lg text-gray-600">探索陕西丰富的文化遗产与非遗技艺</p>
+        </div>
+        <div class="absolute top-10 left-10 w-16 h-16 bg-white/10 rounded-full float-animation"></div>
+        <div class="absolute bottom-5 right-10 w-20 h-20 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
+    </div>
+
+    <main class="container mx-auto px-4 py-10 -mt-6">
+        <!-- 传统技艺与历史遗迹 - 左右分布 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <!-- 传统技艺 - 左侧 -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl">
+                <div class="text-center mb-6">
+                    <span class="inline-block px-5 py-1.5 bg-purple-100 text-purple-600 rounded-full text-xl font-bold mb-2"><i class="fa-solid fa-gem mr-1"></i>传统技艺</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="card-hover rounded-2xl overflow-hidden bg-white border border-red-100" onclick="showHeritageModal('qinqiang')">
+                        <div class="h-40 bg-cover bg-center relative" style="background-image: url('img/秦腔.jpg');">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                <i class="fa-solid fa-masks-theater text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h3 class="font-bold text-xs mb-0.5">秦腔</h3>
+                            <p class="text-gray-500 text-[10px]">中国最古老的剧种之一</p>
+                        </div>
+                    </div>
+                    <div class="card-hover rounded-2xl overflow-hidden bg-white border border-amber-100" onclick="showHeritageModal('piying')">
+                        <div class="h-40 bg-cover bg-center relative" style="background-image: url('img/皮影.jpg');">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                <i class="fa-solid fa-paintbrush text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h3 class="font-bold text-xs mb-0.5">皮影戏</h3>
+                            <p class="text-gray-500 text-[10px]">用兽皮制成的人物剪影</p>
+                        </div>
+                    </div>
+                    <div class="card-hover rounded-2xl overflow-hidden bg-white border border-emerald-100" onclick="showHeritageModal('jianzhi')">
+                        <div class="h-40 bg-cover bg-center relative" style="background-image: url('img/剪纸.jpg');">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                <i class="fa-solid fa-scissors text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h3 class="font-bold text-xs mb-0.5">剪纸</h3>
+                            <p class="text-gray-500 text-[10px]">窗花艺术，历史悠久</p>
+                        </div>
+                    </div>
+                    <div class="card-hover rounded-2xl overflow-hidden bg-white border border-blue-100" onclick="showHeritageModal('tangsancai')">
+                        <div class="h-40 bg-cover bg-center relative" style="background-image: url('img/唐三彩.jpg');">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                <i class="fa-solid fa-swatchbook text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h3 class="font-bold text-xs mb-0.5">唐三彩</h3>
+                            <p class="text-gray-500 text-[10px]">唐代低温釉陶器</p>
+                        </div>
+                    </div>
+                    <div class="card-hover rounded-2xl overflow-hidden bg-white border border-purple-100" onclick="showHeritageModal('shufa')">
+                        <div class="h-40 bg-cover bg-center relative" style="background-image: url('img/书法碑刻.jpg');">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                <i class="fa-solid fa-scroll text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h3 class="font-bold text-xs mb-0.5">书法碑刻</h3>
+                            <p class="text-gray-500 text-[10px]">西安碑林书法宝库</p>
+                        </div>
+                    </div>
+                    <div class="card-hover rounded-2xl overflow-hidden bg-white border border-teal-100" onclick="showHeritageModal('xifeng')">
+                        <div class="h-40 bg-cover bg-center relative" style="background-image: url('img/西凤酒.jpg');">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                <i class="fa-solid fa-wine-bottle text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h3 class="font-bold text-xs mb-0.5">西凤酒</h3>
+                            <p class="text-gray-500 text-[10px]">中国四大名酒之一</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 历史遗迹 - 右侧 -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl">
+                <div class="text-center mb-6">
+                    <span class="inline-block px-5 py-1.5 bg-orange-100 text-orange-600 rounded-full text-xl font-bold mb-2"><i class="fa-solid fa-landmark mr-1"></i>历史遗迹</span>
+                </div>
+                <div class="space-y-2">
+                    <div class="card-hover bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100 flex gap-4 items-center" onclick="showArtifactModal('bingmayong')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"><img src="img/兵马俑.jpg" class="w-full h-full object-cover" alt="兵马俑"></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">秦始皇兵马俑</h3><span class="px-2.5 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">世界遗产</span><span class="text-gray-600 text-sm">世界第八大奇迹，再现大秦帝国军威</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-hover bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4 border border-orange-100 flex gap-4 items-center" onclick="showArtifactModal('huaqing')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-hot-tub text-white text-lg"></i></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">华清池</h3><span class="px-2.5 py-1 bg-orange-100 text-orange-600 text-xs rounded-full">皇家园林</span><span class="text-gray-600 text-sm">杨贵妃沐浴之地，唐玄宗行宫御苑</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-hover bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-4 border border-yellow-100 flex gap-4 items-center" onclick="showArtifactModal('famen')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-vihara text-white text-lg"></i></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">法门寺</h3><span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">佛教圣地</span><span class="text-gray-600 text-sm">供奉佛指舍利，唐代皇家寺院</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-hover bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 flex gap-4 items-center" onclick="showArtifactModal('huangdi')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-mound text-white text-lg"></i></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">黄帝陵</h3><span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs rounded-full">人文初祖</span><span class="text-gray-600 text-sm">中华民族始祖轩辕黄帝陵寝，天下第一陵</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-hover bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-100 flex gap-4 items-center" onclick="showArtifactModal('maoling')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chess-rook text-white text-lg"></i></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">茂陵</h3><span class="px-2.5 py-1 bg-purple-100 text-purple-600 text-xs rounded-full">汉武雄风</span><span class="text-gray-600 text-sm">汉武帝刘彻陵墓，汉代最大帝王陵</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-hover bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-4 border border-teal-100 flex gap-4 items-center" onclick="showArtifactModal('daming')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-landmark-dome text-white text-lg"></i></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">大明宫遗址</h3><span class="px-2.5 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">盛唐皇宫</span><span class="text-gray-600 text-sm">唐代最大宫殿群，丝绸之路起点标志</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-hover bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl p-4 border border-rose-100 flex gap-4 items-center" onclick="showArtifactModal('simaqian')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-feather-pointed text-white text-lg"></i></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3"><h3 class="font-bold text-base">司马迁祠</h3><span class="px-2.5 py-1 bg-rose-100 text-rose-700 text-xs rounded-full">史圣故里</span><span class="text-gray-600 text-sm">太史公司马迁祠墓，《史记》诞生地</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 三秦文化 - 扩展内容 -->
+        <div class="mt-10">
+            <div class="text-center mb-6">
+                <span class="inline-block px-5 py-1.5 bg-pink-100 text-pink-600 rounded-full text-xl font-bold mb-2"><i class="fa-solid fa-star mr-1"></i>三秦文化</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="feature-card glass-card rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-bowl-food text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">饮食文化</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">陕西是中华饮食文化的重要发源地，"陕菜"历史悠久，风味独特。关中平原盛产小麦，造就了丰富多彩的面食文化。西安作为十三朝古都，汇聚了各地美食精华，形成了独特的饮食体系。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">biangbiang面</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">羊肉泡馍</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">肉夹馍</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">凉皮</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">甑糕</span>
+                    </div>
+                </div>
+                <div class="feature-card glass-card rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-language text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">语言文化</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">陕西话（关中方言）是古汉语活化石，语音语调独特。关中方言保留了大量古汉语词汇和语法特征，被誉为"中国古代语言的活字典"。秦腔作为方言文化的代表，影响深远。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-orange-50 text-orange-600 text-xs rounded-full">方言特色</span>
+                        <span class="px-3 py-1 bg-orange-50 text-orange-600 text-xs rounded-full">秦腔</span>
+                        <span class="px-3 py-1 bg-orange-50 text-orange-600 text-xs rounded-full">影视影响</span>
+                    </div>
+                </div>
+                <div class="feature-card glass-card rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-users text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">民俗文化</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">陕西民俗文化丰富多彩，保留了大量的传统节日习俗和民间艺术。剪纸、皮影戏、社火等民间艺术形式代代相传，展现了三秦人民的智慧和创造力。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-purple-50 text-purple-600 text-xs rounded-full">剪纸艺术</span>
+                        <span class="px-3 py-1 bg-purple-50 text-purple-600 text-xs rounded-full">社火表演</span>
+                        <span class="px-3 py-1 bg-purple-50 text-purple-600 text-xs rounded-full">庙会文化</span>
+                    </div>
+                </div>
+                
+        </div>
+    </main>
+
+    <div id="heritageModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeHeritageModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 p-6 border-b border-gray-100 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white z-10">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center" id="heritageModalTitle"><i class="fa-solid fa-gem mr-3"></i>详情</h3>
+                    <button onclick="closeHeritageModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all"><i class="fa-solid fa-times text-lg"></i></button>
+                </div>
+            </div>
+            <div class="p-8" id="heritageModalContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50">
+                <button onclick="closeHeritageModal()" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:opacity-90 transition-all shadow-lg"><i class="fa-solid fa-check mr-2"></i>我知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="artifactModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeArtifactModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 p-6 border-b border-gray-100 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white z-10">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center" id="artifactModalTitle"><i class="fa-solid fa-landmark mr-3"></i>详情</h3>
+                    <button onclick="closeArtifactModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all"><i class="fa-solid fa-times text-lg"></i></button>
+                </div>
+            </div>
+            <div class="p-8" id="artifactModalContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex gap-4">
+                <button onclick="closeArtifactModal()" class="flex-1 py-3 border-2 border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-100 transition-all"><i class="fa-solid fa-arrow-left mr-2"></i>返回</button>
+                <a id="artifactNavBtn" href="#" target="_blank" class="flex-1 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium text-center hover:opacity-90 transition-all shadow-lg"><i class="fa-solid fa-globe mr-2"></i>访问官网</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gradient-to-br from-gray-900 via-slate-900 to-purple-950 text-white py-16 px-6">
+        <div class="container mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-4"><div class="w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-compass text-xl"></i></div><span class="font-bold text-xl">数智轻行 智游三秦</span></div>
+            <p class="text-gray-400 mb-4">陕西文旅轻量化导航服务平台</p>
+            <div class="flex justify-center gap-6 mb-6"><a href="about.html" class="text-gray-400 hover:text-white transition-colors">关于陕西</a><a href="culture.html" class="text-gray-400 hover:text-white transition-colors">文化特色</a><a href="attractions.html" class="text-gray-400 hover:text-white transition-colors">景点介绍</a><a href="contact.html" class="text-gray-400 hover:text-white transition-colors">联系我们</a></div>
+</div>
+    </footer>
+
+    <div class="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div>
+
+    <script>
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() { document.getElementById('mobileMenu').style.display = document.getElementById('mobileMenu').style.display === 'none' ? 'block' : 'none'; });
+        const heritageData = {
+            qinqiang: { title: '秦腔', icon: 'fa-masks-theater', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 border-l-4 border-red-500"><h4 class="font-bold text-red-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>简介</h4><p class="text-gray-700">秦腔是中国最古老的剧种之一，起源于古代陕西、甘肃一带，因以枣木梆子为击节乐器，所以又叫"梆子腔"。秦腔的表演技艺朴实、粗犷、豪放，富有夸张性。</p></div><div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100"><h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-music mr-2"></i>艺术特点</h4><ul class="text-gray-700 text-sm space-y-2"><li>• <strong>唱腔</strong>：慷慨激昂，以梆子击节</li><li>• <strong>表演</strong>：夸张性强，注重武打</li><li>• <strong>伴奏</strong>：以板胡为主</li></ul></div><div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100"><h4 class="font-bold text-green-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-star mr-2"></i>代表剧目</h4><div class="flex flex-wrap gap-2">' + ['《铡美案》', '《周仁回府》', '《三滴血》', '《火焰驹》'].map(x => `<span class="px-4 py-2 bg-white rounded-full text-sm text-green-700 shadow-sm border border-green-200">${x}</span>`).join('') + '</div></div></div>' },
+            piying: { title: '皮影戏', icon: 'fa-paintbrush', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6 border-l-4 border-amber-500"><h4 class="font-bold text-amber-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>简介</h4><p class="text-gray-700">皮影戏，又称"影子戏"或"灯影戏"，是中国民间古老的传统艺术。陕西皮影以西安皮影为代表，造型精巧别致，雕工细腻，色彩古朴典雅。</p></div><div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100"><h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-pen-nib mr-2"></i>制作工艺</h4><ul class="text-gray-700 text-sm space-y-2"><li>• <strong>选材</strong>：选用上等牛皮或驴皮</li><li>• <strong>浸泡</strong>：将皮子浸泡软化</li><li>• <strong>雕刻</strong>：用刻刀雕刻出人物轮廓</li><li>• <strong>着色</strong>：用矿物颜料上色</li></ul></div></div>' },
+            jianzhi: { title: '剪纸', icon: 'fa-scissors', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-l-4 border-emerald-500"><h4 class="font-bold text-emerald-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>简介</h4><p class="text-gray-700">陕西剪纸历史悠久，是中国剪纸艺术的重要发源地之一。陕西剪纸以窗花最为普遍，图案多为花鸟虫鱼、吉祥图案等。</p></div><div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100"><h4 class="font-bold text-blue-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-palette mr-2"></i>艺术风格</h4><ul class="text-gray-700 text-sm space-y-2"><li>• <strong>关中剪纸</strong>：细腻秀丽，线条流畅</li><li>• <strong>陕北剪纸</strong>：粗犷豪放，想象丰富</li><li>• <strong>陕南剪纸</strong>：精巧别致，秀丽灵动</li></ul></div></div>' },
+            tangsancai: { title: '唐三彩', icon: 'fa-swatchbook', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border-l-4 border-blue-500"><h4 class="font-bold text-blue-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>简介</h4><p class="text-gray-700">唐三彩是唐代盛行的低温釉陶器，以黄、绿、白三色为主，故称"唐三彩"。它以造型生动逼真、色泽艳丽和富有生活气息而著称。</p></div><div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100"><h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-temperature-arrow-up mr-2"></i>制作工艺</h4><ul class="text-gray-700 text-sm space-y-2"><li>• <strong>胎料</strong>：选用北方次高岭土</li><li>• <strong>烧制</strong>：先素烧（1000-1100℃），再釉烧</li><li>• <strong>釉色</strong>：以铅为助熔剂，配以各种金属氧化物</li></ul></div></div>' },
+            shufa: { title: '书法碑刻', icon: 'fa-scroll', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border-l-4 border-purple-500"><h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>简介</h4><p class="text-gray-700">西安碑林是中国收藏古代碑石时间最早、数目最多的一座艺术宝库。它不仅是中国书法艺术的宝库，也是中国古籍刻石的名山。</p></div><div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100"><h4 class="font-bold text-blue-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-user mr-2"></i>代表作品</h4><ul class="text-gray-700 text-sm space-y-2"><li>• <strong>《颜勤礼碑》</strong>：颜真卿代表作，楷书巅峰</li><li>• <strong>《柳公权神策军碑》</strong>：楷书典范</li><li>• <strong>《怀素千字文》</strong>：草书珍品</li></ul></div></div>' },
+            xifeng: { title: '西凤酒酿造', icon: 'fa-wine-bottle', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-2xl p-6 border-l-4 border-teal-500"><h4 class="font-bold text-teal-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>简介</h4><p class="text-gray-700">西凤酒是中国四大名酒之一，始于殷商，盛于唐宋，已有三千多年历史。产于陕西省宝鸡市凤翔区柳林镇，具有"凤香型"独特的风格。</p></div><div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100"><h4 class="font-bold text-orange-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-beer-mug-empty mr-2"></i>酿造工艺</h4><ul class="text-gray-700 text-sm space-y-2"><li>• <strong>制曲</strong>：采用大曲发酵</li><li>• <strong>发酵</strong>：土窖发酵，窖龄越长酒质越好</li><li>• <strong>储藏</strong>：海子封藏，陶坛存储</li><li>• <strong>勾兑</strong>：以酒勾酒，精心调配</li></ul></div></div>' }
+        };
+        const artifactData = {
+            bingmayong: { title: '秦始皇兵马俑', icon: 'fa-army', url: 'https://www.bmy.com.cn', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border-l-4 border-blue-500"><h4 class="font-bold text-blue-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>景区简介</h4><p class="text-gray-700">秦始皇兵马俑位于陕西省西安市临潼区，是世界第八大奇迹。共发掘出陶俑、陶马8000余件，再现了秦朝军队的雄壮阵容。</p></div><div class="grid grid-cols-2 gap-4"><div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-blue-600">8000+</div><div class="text-xs text-gray-600">陶俑数量</div></div><div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-orange-600">1974</div><div class="text-xs text-gray-600">发现年份</div></div><div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-green-600">3个</div><div class="text-xs text-gray-600">兵马俑坑</div></div><div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-purple-600">世界遗产</div><div class="text-xs text-gray-600">UNESCO认证</div></div></div><div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100"><h4 class="font-bold text-yellow-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-ticket mr-2"></i>实用信息</h4><ul class="text-gray-600 text-sm space-y-1"><li>• 地址：西安市临潼区秦陵北路</li><li>• 门票：旺季150元，淡季120元</li><li>• 开放时间：8:30-18:00</li></ul></div></div>' },
+            chengqiang: { title: '西安城墙', icon: 'fa-dungeon', url: 'http://www.xacheng.com', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border-l-4 border-orange-500"><h4 class="font-bold text-orange-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>景区简介</h4><p class="text-gray-700">西安城墙是中国现存规模最大、保存最完整的古代城垣。始建于隋朝，唐代沿用，至今已有1400多年历史。</p></div><div class="grid grid-cols-2 gap-4"><div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-blue-600">13.74</div><div class="text-xs text-gray-600">公里周长</div></div><div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-orange-600">1400+</div><div class="text-xs text-gray-600">年历史</div></div><div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-green-600">4座</div><div class="text-xs text-gray-600">城门</div></div><div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-purple-600">1988</div><div class="text-xs text-gray-600">修复完成</div></div></div><div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100"><h4 class="font-bold text-yellow-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-ticket mr-2"></i>实用信息</h4><ul class="text-gray-600 text-sm space-y-1"><li>• 地址：西安市市中心</li><li>• 门票：54元/人</li><li>• 开放时间：8:00-22:00</li></ul></div></div>' },
+            dayan: { title: '大雁塔', icon: 'fa-mosque', url: 'http://www.dayanta.com', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border-l-4 border-purple-500"><h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>景区简介</h4><p class="text-gray-700">大雁塔位于西安市南郊大慈恩寺内，是为保存玄奘法师西行取回的经卷而建的佛塔。塔高64.5米，七层塔身，是中国古代砖塔的杰出代表。</p></div><div class="grid grid-cols-2 gap-4"><div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-blue-600">64.5</div><div class="text-xs text-gray-600">米塔高</div></div><div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-orange-600">7层</div><div class="text-xs text-gray-600">塔身层数</div></div><div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-green-600">652</div><div class="text-xs text-gray-600">建成年份</div></div><div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-purple-600">唐代</div><div class="text-xs text-gray-600">建造年代</div></div></div><div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100"><h4 class="font-bold text-yellow-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-ticket mr-2"></i>实用信息</h4><ul class="text-gray-600 text-sm space-y-1"><li>• 地址：西安市雁塔区大慈恩寺内</li><li>• 门票：40元/人</li><li>• 开放时间：9:00-17:00</li></ul></div></div>' },
+            museum: { title: '陕西历史博物馆', icon: 'fa-building-columns', url: 'https://www.sxhm.com', content: '<div class="space-y-6"><div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-l-4 border-green-500"><h4 class="font-bold text-green-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-info-circle mr-2"></i>景区简介</h4><p class="text-gray-700">陕西历史博物馆是中国第一座大型现代化国家级博物馆，馆藏文物171万余件，上起远古人类初始阶段使用的简单石器。</p></div><div class="grid grid-cols-2 gap-4"><div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-blue-600">171万+</div><div class="text-xs text-gray-600">文物数量</div></div><div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-orange-600">100万+</div><div class="text-xs text-gray-600">年历史跨度</div></div><div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-green-600">3个</div><div class="text-xs text-gray-600">基本展厅</div></div><div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 text-center shadow-sm"><div class="text-2xl font-bold text-purple-600">1987</div><div class="text-xs text-gray-600">建成开放</div></div></div><div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100"><h4 class="font-bold text-yellow-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-ticket mr-2"></i>实用信息</h4><ul class="text-gray-600 text-sm space-y-1"><li>• 地址：西安市雁塔区小寨东路91号</li><li>• 门票：免费（需预约）</li><li>• 开放时间：9:00-17:30（周一闭馆）</li></ul></div></div>' }
+        };
+        function showHeritageModal(type) { document.getElementById('heritageModalTitle').innerHTML = '<i class="fa-solid ' + heritageData[type].icon + ' mr-3"></i>' + heritageData[type].title; document.getElementById('heritageModalContent').innerHTML = heritageData[type].content; document.getElementById('heritageModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeHeritageModal() { document.getElementById('heritageModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        function showArtifactModal(type) { document.getElementById('artifactModalTitle').innerHTML = '<i class="fa-solid ' + artifactData[type].icon + ' mr-3"></i>' + artifactData[type].title; document.getElementById('artifactNavBtn').href = artifactData[type].url; document.getElementById('artifactModalContent').innerHTML = artifactData[type].content; document.getElementById('artifactModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeArtifactModal() { document.getElementById('artifactModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeHeritageModal(); closeArtifactModal(); } });
+    </script>
+</body>
+</html>

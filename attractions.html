@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景点介绍 - 数智轻行 智游三秦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        natural: '#00B42A',
+                        cultural: '#722ED1',
+                        redtour: '#F53F3F',
+                        dark: '#1D2129'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        html { font-size: 18px; }
+        
+        body {
+            background: url('img/陕西.jpg') center center / cover fixed no-repeat;
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.25);
+        }
+        
+        .hero-gradient { background: transparent; position: relative; overflow: hidden; }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: bgMove 20s linear infinite;
+        }
+        
+        @keyframes bgMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-60px) translateY(-60px); }
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-hover:hover .card-image {
+            transform: scale(1.1);
+        }
+        
+        .card-image {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-filter {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-filter:hover {
+            transform: translateY(-2px);
+        }
+        
+        .active-filter {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .favorite-btn.active {
+            color: #F53F3F !important;
+        }
+        
+        .favorite-btn.active i {
+            animation: heartBeat 0.5s ease;
+        }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+        
+        .modal-content {
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .collection-badge {
+            animation: bounceIn 0.5s ease;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .type-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .type-natural { background: linear-gradient(135deg, #00B42A 0%, #23C343 100%); }
+        .type-cultural { background: linear-gradient(135deg, #722ED1 0%, #9254DE 100%); }
+        .type-redtour { background: linear-gradient(135deg, #F53F3F 0%, #FF7875 100%); }
+        
+        .input-style {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .input-style:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        
+        .footer-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- 主导航 -->
+    <header class="glass-card sticky top-0 z-40 border-b-0">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg transform group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-compass text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-lg gradient-text">数智轻行 智游三秦</div>
+                        <div class="text-xs text-gray-500">轻量 · 便捷 · 精准</div>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="about.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">关于陕西</a>
+                    <a href="culture.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">文化特色</a>
+                    <a href="attractions.html" class="text-sm gradient-text font-bold">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">美食推荐</a>
+                    <a href="guide.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">联系我们</a>
+                    <div class="flex items-center gap-3 ml-4">
+                        <a href="auth.html" class="px-5 py-2.5 border-2 border-purple-500 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-50 transition-all">登录</a>
+                        <a href="auth.html" class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all">注册</a>
+                    </div>
+                </nav>
+                <button class="md:hidden text-gray-600" id="mobileMenuBtn">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <nav class="md:hidden mt-4 pb-4 border-t border-gray-100 pt-4" id="mobileMenu" style="display: none;">
+                <div class="flex flex-col gap-3">
+                    <a href="about.html" class="text-sm text-gray-600 py-2">关于陕西</a>
+                    <a href="culture.html" class="text-sm text-gray-600 py-2">文化特色</a>
+                    <a href="attractions.html" class="text-sm gradient-text font-bold py-2">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 py-2">美食推荐</a>
+                    <a href="guide.html" class="text-sm text-gray-600 py-2">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 py-2">联系我们</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题 -->
+    <div class="hero-gradient text-gray-900 py-12 relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <i class="fa-solid fa-mountain-sun mr-3 floating"></i>景点介绍
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">探索三秦大地，发现令人惊叹的自然风光与人文奇迹</p>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-10 -mt-6 relative z-20">
+        <!-- 筛选区域 - 压缩 -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fa-solid fa-filter"></i>
+                    </div>
+                    <h2 class="text-xl font-bold gradient-text">智能筛选</h2>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn-filter active-filter px-5 py-2 rounded-full text-base font-bold" data-type="all">全部</button>
+                    <button class="btn-filter bg-white border-2 border-gray-200 text-gray-700 px-5 py-2 rounded-full text-base font-bold" data-type="natural">
+                        <i class="fa-solid fa-mountain mr-1 text-green-500"></i>自然
+                    </button>
+                    <button class="btn-filter bg-white border-2 border-gray-200 text-gray-700 px-5 py-2 rounded-full text-base font-bold" data-type="cultural">
+                        <i class="fa-solid fa-landmark mr-1 text-purple-500"></i>人文
+                    </button>
+                    <button class="btn-filter bg-white border-2 border-gray-200 text-gray-700 px-5 py-2 rounded-full text-base font-bold" data-type="redtour">
+                        <i class="fa-solid fa-flag mr-1 text-red-500"></i>红色
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-3">
+                <div class="flex-1">
+                    <div class="relative">
+                        <input type="text" class="input-style w-full pl-10 pr-4 py-3 rounded-xl text-sm" placeholder="搜索景点..." id="searchInput">
+                        <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-purple-400"></i>
+                    </div>
+                </div>
+                <div class="md:w-40">
+                    <select class="input-style w-full px-4 py-3 rounded-xl text-sm" id="citySelect">
+                        <option value="all">全部城市</option>
+                        <option value="xian">西安市</option>
+                        <option value="baoji">宝鸡市</option>
+                        <option value="xianyang">咸阳市</option>
+                        <option value="yanan">延安市</option>
+                        <option value="weinan">渭南市</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 必打卡景点 -->
+        <div class="mb-8">
+            <div class="text-center mb-6">
+                <span class="inline-block px-5 py-1.5 bg-gradient-to-r from-cyan-100 to-blue-100 text-blue-600 rounded-full text-xl font-bold mb-2"><i class="fa-solid fa-sparkles mr-1"></i>推荐景点</span>
+            </div>
+
+        <!-- 景点列表 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="spotList">
+            <!-- 华山 -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" data-type="natural" data-city="weinan" data-id="huashan" data-name="华山" data-url="https://www.huashanly.com">
+                <div class="relative h-56 overflow-hidden">
+                    <img src="img/华山.jpg" alt="华山" class="card-image w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute top-3 left-3 type-natural text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        <i class="fa-solid fa-mountain mr-1"></i>自然景观
+                    </div>
+                    <button class="favorite-btn absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-lg z-10" onclick="toggleFavorite('huashan', '华山', event)">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+                    <!-- 文字覆盖在图片上 -->
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="font-bold text-xl text-white mb-1 drop-shadow-lg">华山</h3>
+                        <div class="flex items-center text-white/80 text-xs mb-2">
+                            <i class="fa-solid fa-location-dot mr-1"></i>
+                            <span>渭南市华阴市</span>
+                            <span class="mx-2">|</span>
+                            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                        西岳华山，以雄奇险峻著称，长空栈道、鹞子翻身等景点堪称天下奇观。
+                    </p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all" onclick="viewDetails('huashan')">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+
+            <!-- 兵马俑 -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" data-type="cultural" data-city="xian" data-id="bingmayong" data-name="秦始皇兵马俑" data-url="https://www.bmy.com.cn">
+                <div class="relative h-56 overflow-hidden">
+                    <img src="img/兵马俑.jpg" alt="兵马俑" class="card-image w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute top-3 left-3 type-cultural text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        <i class="fa-solid fa-landmark mr-1"></i>人文古迹
+                    </div>
+                    <button class="favorite-btn absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-lg z-10" onclick="toggleFavorite('bingmayong', '秦始皇兵马俑', event)">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="font-bold text-xl text-white mb-1 drop-shadow-lg">秦始皇兵马俑</h3>
+                        <div class="flex items-center text-white/80 text-xs mb-2">
+                            <i class="fa-solid fa-location-dot mr-1"></i>
+                            <span>西安市临潼区</span>
+                            <span class="mx-2">|</span>
+                            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                            <span>4.9</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                        世界第八大奇迹，再现大秦帝国的军威。
+                    </p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all" onclick="viewDetails('bingmayong')">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+
+            <!-- 大雁塔 -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" data-type="cultural" data-city="xian" data-id="dayan" data-name="大雁塔·大唐不夜城" data-url="http://www.dayanta.com">
+                <div class="relative h-56 overflow-hidden">
+                    <img src="img/大雁塔.jpg" alt="大雁塔" class="card-image w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute top-3 left-3 bg-gradient-to-r from-orange-400 to-yellow-400 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        <i class="fa-solid fa-city mr-1"></i>都市休闲
+                    </div>
+                    <button class="favorite-btn absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-lg z-10" onclick="toggleFavorite('dayan', '大雁塔', event)">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="font-bold text-xl text-white mb-1 drop-shadow-lg">大雁塔·大唐不夜城</h3>
+                        <div class="flex items-center text-white/80 text-xs mb-2">
+                            <i class="fa-solid fa-location-dot mr-1"></i>
+                            <span>西安市雁塔区</span>
+                            <span class="mx-2">|</span>
+                            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                        为保存玄奘法师取回的经卷而建，大唐不夜城重现盛唐繁华。
+                    </p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all" onclick="viewDetails('dayan')">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+
+            <!-- 延安革命纪念馆 -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" data-type="redtour" data-city="yanan" data-id="yanan" data-name="延安革命纪念馆" data-url="http://www.yagmj.com">
+                <div class="relative h-56 overflow-hidden">
+                    <img src="img/延安革命纪念馆.jpg" alt="延安革命纪念馆" class="card-image w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute top-3 left-3 type-redtour text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        <i class="fa-solid fa-flag mr-1"></i>红色文旅
+                    </div>
+                    <button class="favorite-btn absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-lg z-10" onclick="toggleFavorite('yanan', '延安革命纪念馆', event)">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="font-bold text-xl text-white mb-1 drop-shadow-lg">延安革命纪念馆</h3>
+                        <div class="flex items-center text-white/80 text-xs mb-2">
+                            <i class="fa-solid fa-location-dot mr-1"></i>
+                            <span>延安市宝塔区</span>
+                            <span class="mx-2">|</span>
+                            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                            <span>4.7</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                        记录中国共产党在延安的奋斗历程，传承红色基因。
+                    </p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all" onclick="viewDetails('yanan')">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+
+            <!-- 壶口瀑布 -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" data-type="natural" data-city="yanan" data-id="hukou" data-name="黄河壶口瀑布" data-url="https://www.hukoufalls.com.cn">
+                <div class="relative h-56 overflow-hidden">
+                    <img src="img/壶口瀑布.jpg" alt="壶口瀑布" class="card-image w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute top-3 left-3 type-natural text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        <i class="fa-solid fa-water mr-1"></i>自然景观
+                    </div>
+                    <button class="favorite-btn absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-lg z-10" onclick="toggleFavorite('hukou', '黄河壶口瀑布', event)">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="font-bold text-xl text-white mb-1 drop-shadow-lg">黄河壶口瀑布</h3>
+                        <div class="flex items-center text-white/80 text-xs mb-2">
+                            <i class="fa-solid fa-location-dot mr-1"></i>
+                            <span>延安市宜川县</span>
+                            <span class="mx-2">|</span>
+                            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                        气势磅礴，涛声震天，黄河最壮观的自然景观之一。
+                    </p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all" onclick="viewDetails('hukou')">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+
+            <!-- 乾陵 -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" data-type="cultural" data-city="xianyang" data-id="qianling" data-name="乾陵" data-url="https://www.xylfq.com">
+                <div class="relative h-56 overflow-hidden">
+                    <img src="img/乾陵.jpg" alt="乾陵" class="card-image w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute top-3 left-3 type-cultural text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        <i class="fa-solid fa-landmark mr-1"></i>人文古迹
+                    </div>
+                    <button class="favorite-btn absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-lg z-10" onclick="toggleFavorite('qianling', '乾陵', event)">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="font-bold text-xl text-white mb-1 drop-shadow-lg">乾陵</h3>
+                        <div class="flex items-center text-white/80 text-xs mb-2">
+                            <i class="fa-solid fa-location-dot mr-1"></i>
+                            <span>咸阳市乾县</span>
+                            <span class="mx-2">|</span>
+                            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                            <span>4.6</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                        唐高宗李治与武则天的合葬墓，无字碑千古之谜。
+                    </p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all" onclick="viewDetails('qianling')">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 更多景点按钮 -->
+        <div class="text-center mt-8">
+            <button id="loadMoreBtn" class="btn-primary px-10 py-3.5 text-white rounded-full text-base font-bold inline-flex items-center gap-2 hover:scale-105 transition-all">
+                <i class="fa-solid fa-angles-down"></i>更多景点
+            </button>
+        </div>
+        </div>
+
+        <!-- 收藏的景点 -->
+        <div class="mt-8" id="collectionSection">
+            <div class="glass-card rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="inline-block px-5 py-1.5 bg-gradient-to-r from-pink-100 to-red-100 text-pink-600 rounded-full text-xl font-bold"><i class="fa-solid fa-heart mr-1"></i>我的收藏</span>
+                        <span id="collectionCountBadge" class="px-3 py-0.5 bg-gradient-to-r from-pink-500 to-red-500 text-white text-sm rounded-full hidden">0</span>
+                    </div>
+                    <button onclick="showCollectionModal()" class="text-sm text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1 transition-colors">
+                        查看全部 <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- 收藏为空提示 -->
+                <div id="collectionEmpty" class="text-center py-12">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-regular fa-heart text-gray-300 text-3xl"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">暂无收藏</p>
+                    <p class="text-sm text-gray-400 mt-2">点击景点的爱心图标即可收藏</p>
+                </div>
+
+                <!-- 收藏列表 -->
+                <div id="collectionGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+
+                <!-- 清空收藏 -->
+                <div id="collectionActions" class="mt-6 pt-4 border-t border-gray-100 hidden text-center">
+                    <button onclick="clearAllFavorites()" class="px-6 py-2.5 border-2 border-pink-300 text-pink-500 rounded-full text-sm font-medium hover:bg-pink-50 transition-all">
+                        <i class="fa-solid fa-trash mr-1"></i>清空所有收藏
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    <!-- 景点详情弹窗 -->
+    <div id="detailModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeDetailModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white sticky top-0">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center" id="detailModalTitle">
+                        <i class="fa-solid fa-mountain-sun mr-3"></i>景点详情
+                    </h3>
+                    <button onclick="closeDetailModal()" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8" id="detailModalContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex gap-4 sticky bottom-0 rounded-b-3xl">
+                <button onclick="closeDetailModal()" class="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-all">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>关闭
+                </button>
+                <button id="detailFavoriteBtn" class="flex-1 py-3 border-2 border-pink-300 text-pink-500 rounded-xl font-medium hover:bg-pink-50 transition-all">
+                    <i class="fa-regular fa-heart mr-2"></i>收藏
+                </button>
+                <a id="detailWebsiteBtn" href="#" target="_blank" class="flex-1 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all text-center">
+                    <i class="fa-solid fa-globe mr-2"></i>访问官网
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收藏列表弹窗 -->
+    <div id="collectionModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeCollectionModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
+            <div class="p-6 bg-gradient-to-r from-pink-500 to-red-500 text-white">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center">
+                        <i class="fa-solid fa-heart mr-3"></i>我的收藏
+                    </h3>
+                    <button onclick="closeCollectionModal()" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-96 overflow-y-auto" id="collectionListContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 rounded-b-3xl">
+                <button onclick="closeCollectionModal()" class="w-full py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-all">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer-gradient text-white py-16 px-6 mt-16">
+        <div class="container mx-auto text-center">
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-compass text-2xl"></i>
+                </div>
+                <span class="text-2xl font-bold">数智轻行 智游三秦</span>
+            </div>
+            <p class="text-white/70 mb-6">探索陕西之美，从这里开始</p>
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="about.html" class="text-white/70 hover:text-white transition-colors">关于陕西</a>
+                <span class="text-white/30">|</span>
+                <a href="culture.html" class="text-white/70 hover:text-white transition-colors">文化特色</a>
+                <span class="text-white/30">|</span>
+                <a href="attractions.html" class="text-white/70 hover:text-white transition-colors">景点介绍</a>
+                <span class="text-white/30">|</span>
+                <a href="contact.html" class="text-white/70 hover:text-white transition-colors">联系我们</a>
+            </div>
+</div>
+    </footer>
+
+    <script>
+        const spotDetails = {
+            huashan: {
+                name: '华山',
+                type: 'natural',
+                location: '陕西省渭南市华阴市',
+                rating: 4.8,
+                description: '华山，古称"西岳"，为中国五岳之一，以"奇险天下第一山"闻名于世。华山共有五峰，分别是东峰（朝阳峰）、西峰（莲花峰）、南峰（落雁峰）、北峰（云台峰）、中峰（玉女峰）。其中南峰海拔2154.9米，是华山最高山峰。',
+                highlights: [
+                    '长空栈道：被誉为"全球十大最恐怖步道"之一',
+                    '鹞子翻身：通往博台子的必经之路',
+                    '千尺幢：华山第一险道，399级台阶',
+                    '苍龙岭：形如游龙，脊如刃'
+                ],
+                tips: [
+                    '建议穿着舒适的运动鞋和防滑鞋',
+                    '带足水和食物，景区内价格较高',
+                    '体力一般建议乘坐索道上山',
+                    '日出时分景色最美但需早起登山'
+                ],
+                url: 'https://www.huashanly.com',
+                ticket: '旺季160元，淡季100元；索道单程80-140元'
+            },
+            bingmayong: {
+                name: '秦始皇兵马俑博物馆',
+                type: 'cultural',
+                location: '陕西省西安市临潼区',
+                rating: 4.9,
+                description: '秦始皇兵马俑博物馆是世界第八大奇迹，也是中国第一个封建皇帝秦始皇的陵园中一处大型从葬坑。1974年3月，兵马俑被发现；1987年，秦始皇陵及兵马俑坑被联合国教科文组织批准列入《世界遗产名录》。',
+                highlights: [
+                    '一号坑：最大最震撼的兵马俑坑',
+                    '二号坑：军阵最复杂的陪葬坑',
+                    '三号坑：最高军事指挥部',
+                    '铜车马：技术最复杂的青铜器'
+                ],
+                tips: [
+                    '建议提前网上预约门票',
+                    '请导游讲解更能了解历史',
+                    '景区较大，建议安排半天时间',
+                    '附近有华清池可一并游览'
+                ],
+                url: 'https://www.bmy.com.cn',
+                ticket: '旺季150元，淡季120元'
+            },
+            yanan: {
+                name: '延安革命纪念馆',
+                type: 'redtour',
+                location: '陕西省延安市宝塔区',
+                rating: 4.7,
+                description: '延安革命纪念馆是中国革命圣地的重要标志，是一座集收藏、展示、研究、宣传、观光为一体的综合性纪念馆。纪念馆建于1950年，是新中国成立后最早建立的革命纪念馆之一。',
+                highlights: [
+                    '珍贵革命文物数万件',
+                    '详实的历史资料展示',
+                    '生动的多媒体演示',
+                    '红色教育重要基地'
+                ],
+                tips: [
+                    '免费参观，需凭身份证入馆',
+                    '建议提前预约避免排队',
+                    '可与枣园、宝塔山等一并游览',
+                    '是最具教育意义的红色景区'
+                ],
+                url: 'http://www.yagmj.com',
+                ticket: '免费'
+            },
+            dayan: {
+                name: '大雁塔·大唐不夜城',
+                type: 'cultural',
+                location: '陕西省西安市雁塔区',
+                rating: 4.8,
+                description: '大雁塔为玄奘法师主持修建，用于保存从印度带回的佛经。大雁塔北广场拥有亚洲最大的喷泉广场，大唐不夜城以盛唐文化为主题，是西安最受欢迎的夜游景点之一。',
+                highlights: [
+                    '大雁塔：唐代建筑典范',
+                    '音乐喷泉：亚洲最大喷泉',
+                    '大唐不夜城：网红打卡地',
+                    '不倒翁小姐姐：必看表演'
+                ],
+                tips: [
+                    '大雁塔登塔需另外购票',
+                    '大唐不夜城夜景更美',
+                    '建议傍晚开始游览',
+                    '节假日人流量大注意安全'
+                ],
+                url: 'http://www.dayanta.com',
+                ticket: '大雁塔40元，大唐不夜城免费'
+            },
+            hukou: {
+                name: '黄河壶口瀑布',
+                type: 'natural',
+                location: '陕西省延安市宜川县',
+                rating: 4.8,
+                description: '壶口瀑布是黄河上唯一的黄色大瀑布，也是中国第二大瀑布。黄河在此处由300米宽骤然收窄为50米，飞流直下，跌入深谷，形成"千里黄河一壶收"的壮观景象。',
+                highlights: [
+                    '千里黄河一壶收',
+                    '水底冒烟：特有水文景观',
+                    '晴空洒雨：瀑布溅起的水雾',
+                    '霓虹戏水：阳光折射形成彩虹'
+                ],
+                tips: [
+                    '最佳观赏季节为夏季丰水期',
+                    '请穿防水衣物防止湿身',
+                    '可体验黄河漂流项目',
+                    '山西陕西两侧都可观赏'
+                ],
+                url: 'https://www.hukoufalls.com.cn',
+                ticket: '旺季90元，淡季50元'
+            },
+            qianling: {
+                name: '乾陵',
+                type: 'cultural',
+                location: '陕西省咸阳市乾县',
+                rating: 4.6,
+                description: '乾陵是唐高宗李治和女皇武则天的合葬墓，是中国历史上唯一的两位皇帝合葬墓。乾陵因山为陵，气势雄伟，陵园规模宏大，是唐代帝王陵墓中最具代表性的一座。',
+                highlights: [
+                    '无字碑：武则天留下的千古之谜',
+                    '六十一宾王像：六十一位外国人雕像',
+                    '神道石刻：唐代石雕艺术珍品',
+                    '述圣记碑：武则天亲撰碑文'
+                ],
+                tips: [
+                    '可乘坐电瓶车游览',
+                    '陵墓尚未发掘，仅能参观地面文物',
+                    '附近有懿德太子墓可参观',
+                    '建议请导游讲解历史故事'
+                ],
+                url: 'https://www.xylfq.com',
+                ticket: '旺季71元，淡季52元'
+            }
+        };
+
+        let favorites = JSON.parse(localStorage.getItem('shanxi_favorites') || '[]');
+        
+        function renderCollectionSection() {
+            const countBadge = document.getElementById('collectionCountBadge');
+            const emptyEl = document.getElementById('collectionEmpty');
+            const gridEl = document.getElementById('collectionGrid');
+            const actionsEl = document.getElementById('collectionActions');
+
+            if (favorites.length > 0) {
+                countBadge.textContent = favorites.length;
+                countBadge.classList.remove('hidden');
+                emptyEl.classList.add('hidden');
+                gridEl.classList.remove('hidden');
+                actionsEl.classList.remove('hidden');
+
+                gridEl.innerHTML = favorites.map(f => {
+                    const spot = spotDetails[f.id];
+                    const card = document.querySelector(`[data-id="${f.id}"]`);
+                    const imgSrc = card ? card.querySelector('img')?.src : '';
+                    const typeLabel = spot ? { natural: '自然景观', cultural: '人文古迹', redtour: '红色文旅' }[spot.type] : '';
+                    const typeClass = spot ? { natural: 'type-natural', cultural: 'type-cultural', redtour: 'type-redtour' }[spot.type] : '';
+
+                    return `
+                        <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden group" onclick="viewDetails('${f.id}')">
+                            <div class="relative h-40 overflow-hidden">
+                                ${imgSrc ? `<img src="${imgSrc}" alt="${f.name}" class="card-image w-full h-full object-cover">` : `<div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center"><i class="fa-solid fa-image text-white/50 text-4xl"></i></div>`}
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                ${typeLabel ? `<span class="absolute top-3 left-3 ${typeClass} text-white text-xs px-2.5 py-1 rounded-full">${typeLabel}</span>` : ''}
+                                <button class="favorite-btn active absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-red-500 shadow-lg z-10" onclick="removeFavorite('${f.id}', event)">
+                                    <i class="fa-solid fa-heart text-sm"></i>
+                                </button>
+                                <div class="absolute bottom-0 left-0 right-0 p-3">
+                                    <h3 class="font-bold text-base text-white drop-shadow-md">${f.name}</h3>
+                                    ${spot ? `<p class="text-white/70 text-xs"><i class="fa-solid fa-star text-yellow-400 mr-1"></i>${spot.rating}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                countBadge.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+                gridEl.classList.add('hidden');
+                actionsEl.classList.add('hidden');
+            }
+        }
+
+        function toggleFavorite(id, name, event) {
+            event.stopPropagation();
+            const btn = event.currentTarget;
+            const index = favorites.findIndex(f => f.id === id);
+            
+            if (index > -1) {
+                favorites.splice(index, 1);
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fa-regular fa-heart text-lg"></i>';
+            } else {
+                favorites.push({ id, name, time: Date.now() });
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fa-solid fa-heart text-lg"></i>';
+            }
+            
+            localStorage.setItem('shanxi_favorites', JSON.stringify(favorites));
+            renderCollectionSection();
+        }
+
+        function viewDetails(id) {
+            const spot = spotDetails[id];
+            if (!spot) return;
+            
+            const modal = document.getElementById('detailModal');
+            const titleEl = document.getElementById('detailModalTitle');
+            const contentEl = document.getElementById('detailModalContent');
+            const favoriteBtn = document.getElementById('detailFavoriteBtn');
+            const websiteBtn = document.getElementById('detailWebsiteBtn');
+            
+            const typeLabels = { natural: '自然景观', cultural: '人文古迹', redtour: '红色文旅' };
+            const typeColors = { natural: 'type-natural', cultural: 'type-cultural', redtour: 'type-redtour' };
+            
+            titleEl.innerHTML = `<i class="fa-solid fa-mountain-sun mr-3"></i>${spot.name}`;
+            
+            let content = `
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <span class="px-4 py-1.5 ${typeColors[spot.type]} text-white text-sm rounded-full font-medium">${typeLabels[spot.type]}</span>
+                        <div class="flex items-center text-yellow-500">
+                            ${'<i class="fa-solid fa-star"></i>'.repeat(Math.floor(spot.rating))}
+                            ${spot.rating % 1 >= 0.5 ? '<i class="fa-solid fa-star-half-stroke"></i>' : ''}
+                            <span class="ml-2 text-gray-600 font-medium">${spot.rating}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center text-base text-gray-500 bg-gray-50 p-4 rounded-xl">
+                        <i class="fa-solid fa-location-dot mr-3 text-purple-500 text-lg"></i>${spot.location}
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6">
+                        <h4 class="font-bold text-lg text-purple-600 mb-3 flex items-center"><i class="fa-solid fa-info-circle mr-2"></i>景区介绍</h4>
+                        <p class="text-gray-700 leading-relaxed">${spot.description}</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6">
+                        <h4 class="font-bold text-lg text-amber-600 mb-3 flex items-center"><i class="fa-solid fa-star mr-2"></i>游览亮点</h4>
+                        <ul class="space-y-2">
+                            ${spot.highlights.map(h => `<li class="text-gray-700 flex items-start"><i class="fa-solid fa-check-circle text-green-500 mr-3 mt-1"></i>${h}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6">
+                        <h4 class="font-bold text-lg text-blue-600 mb-3 flex items-center"><i class="fa-solid fa-lightbulb mr-2"></i>游览贴士</h4>
+                        <ul class="space-y-2">
+                            ${spot.tips.map(t => `<li class="text-gray-700 flex items-start"><i class="fa-solid fa-hand-point-right text-blue-500 mr-3 mt-1"></i>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6">
+                        <h4 class="font-bold text-lg text-green-600 mb-3 flex items-center"><i class="fa-solid fa-ticket mr-2"></i>门票信息</h4>
+                        <p class="text-gray-700">${spot.ticket}</p>
+                    </div>
+                </div>
+            `;
+            
+            contentEl.innerHTML = content;
+            
+            const isFavorited = favorites.some(f => f.id === id);
+            if (isFavorited) {
+                favoriteBtn.classList.add('bg-pink-50', 'border-pink-300', 'text-pink-500');
+                favoriteBtn.innerHTML = '<i class="fa-solid fa-heart mr-2"></i>已收藏';
+            } else {
+                favoriteBtn.classList.remove('bg-pink-50', 'border-pink-300', 'text-pink-500');
+                favoriteBtn.innerHTML = '<i class="fa-regular fa-heart mr-2"></i>收藏';
+            }
+            
+            favoriteBtn.onclick = function() { toggleFavoriteFromModal(id, spot.name, favoriteBtn); };
+            websiteBtn.href = spot.url;
+            websiteBtn.innerHTML = '<i class="fa-solid fa-globe mr-2"></i>访问官网';
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function toggleFavoriteFromModal(id, name, btn) {
+            const index = favorites.findIndex(f => f.id === id);
+            
+            if (index > -1) {
+                favorites.splice(index, 1);
+                btn.classList.remove('bg-pink-50', 'border-pink-300', 'text-pink-500');
+                btn.innerHTML = '<i class="fa-regular fa-heart mr-2"></i>收藏';
+            } else {
+                favorites.push({ id, name, time: Date.now() });
+                btn.classList.add('bg-pink-50', 'border-pink-300', 'text-pink-500');
+                btn.innerHTML = '<i class="fa-solid fa-heart mr-2"></i>已收藏';
+            }
+            
+            localStorage.setItem('shanxi_favorites', JSON.stringify(favorites));
+            renderCollectionSection();
+            
+            const cardBtn = document.querySelector(`[data-id="${id}"] .favorite-btn`);
+            if (cardBtn) {
+                if (index > -1) {
+                    cardBtn.classList.remove('active');
+                    cardBtn.innerHTML = '<i class="fa-regular fa-heart text-lg"></i>';
+                } else {
+                    cardBtn.classList.add('active');
+                    cardBtn.innerHTML = '<i class="fa-solid fa-heart text-lg"></i>';
+                }
+            }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showCollectionModal() {
+            const modal = document.getElementById('collectionModal');
+            const content = document.getElementById('collectionListContent');
+            
+            if (favorites.length === 0) {
+                content.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-regular fa-heart text-gray-300 text-4xl"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">暂无收藏</p>
+                        <p class="text-sm text-gray-400 mt-2">点击景点的收藏按钮即可收藏</p>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="space-y-3">
+                        ${favorites.map(f => {
+                            const spot = spotDetails[f.id];
+                            return `
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-purple-50 rounded-xl hover:from-gray-100 hover:to-purple-100 transition-all">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-red-500 rounded-xl flex items-center justify-center text-white">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">${f.name}</p>
+                                            <p class="text-xs text-gray-500">${new Date(f.time).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="viewDetails('${f.id}'); closeCollectionModal();" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm rounded-lg font-medium">查看</button>
+                                        <button onclick="removeFavorite('${f.id}')" class="px-4 py-2 border border-gray-300 text-gray-500 text-sm rounded-lg hover:bg-gray-200 transition-all">删除</button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <button onclick="clearAllFavorites()" class="w-full mt-6 py-3 border-2 border-pink-300 text-pink-500 rounded-xl font-medium hover:bg-pink-50 transition-all">
+                        <i class="fa-solid fa-trash mr-2"></i>清空收藏
+                    </button>
+                `;
+            }
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCollectionModal() {
+            document.getElementById('collectionModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function removeFavorite(id, event) {
+            if (event) event.stopPropagation();
+            favorites = favorites.filter(f => f.id !== id);
+            localStorage.setItem('shanxi_favorites', JSON.stringify(favorites));
+            renderCollectionSection();
+            showCollectionModal();
+            
+            const cardBtn = document.querySelector(`[data-id="${id}"] .favorite-btn`);
+            if (cardBtn) {
+                cardBtn.classList.remove('active');
+                cardBtn.innerHTML = '<i class="fa-regular fa-heart text-lg"></i>';
+            }
+        }
+
+        function clearAllFavorites() {
+            if (confirm('确定要清空所有收藏吗？')) {
+                favorites = [];
+                localStorage.setItem('shanxi_favorites', JSON.stringify(favorites));
+                renderCollectionSection();
+                
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.innerHTML = '<i class="fa-regular fa-heart text-lg"></i>';
+                });
+                
+                closeCollectionModal();
+            }
+        }
+
+        function initFavorites() {
+            favorites.forEach(f => {
+                const card = document.querySelector(`[data-id="${f.id}"]`);
+                if (card) {
+                    const btn = card.querySelector('.favorite-btn');
+                    if (btn) {
+                        btn.classList.add('active');
+                        btn.innerHTML = '<i class="fa-solid fa-heart text-lg"></i>';
+                    }
+                }
+            });
+            renderCollectionSection();
+        }
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.style.display = mobileMenu.style.display === 'none' ? 'block' : 'none';
+        });
+
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        const spotCards = document.querySelectorAll('#spotList > div');
+        const searchInput = document.getElementById('searchInput');
+        const citySelect = document.getElementById('citySelect');
+
+        function filterSpots() {
+            const activeType = document.querySelector('.btn-filter.active-filter').dataset.type;
+            const searchText = searchInput.value.toLowerCase().trim();
+            const selectedCity = citySelect.value;
+
+            spotCards.forEach(card => {
+                const cardType = card.dataset.type;
+                const cardCity = card.dataset.city;
+                const cardText = card.textContent.toLowerCase();
+                
+                let isTypeMatch = activeType === 'all' || cardType === activeType;
+                let isCityMatch = selectedCity === 'all' || cardCity === selectedCity;
+                let isSearchMatch = searchText === '' || cardText.includes(searchText);
+                
+                if (isTypeMatch && isCityMatch && isSearchMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('active-filter');
+                    if (!b.dataset.type) b.classList.add('bg-white', 'border-2', 'border-gray-200', 'text-gray-700');
+                });
+                btn.classList.add('active-filter');
+                if (!btn.dataset.type) btn.classList.remove('bg-white', 'border-2', 'border-gray-200', 'text-gray-700');
+                filterSpots();
+            });
+        });
+
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') filterSpots();
+        });
+        citySelect.addEventListener('change', filterSpots);
+
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>正在加载...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fa-solid fa-check mr-2"></i>已加载全部';
+                this.disabled = true;
+                this.classList.add('opacity-70', 'cursor-not-allowed');
+            }, 1500);
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetailModal();
+                closeCollectionModal();
+            }
+        });
+
+        initFavorites();
+    </script>
+</body>
+</html>

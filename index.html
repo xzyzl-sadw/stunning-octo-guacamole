@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陕西本地文旅轻量导航</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入ECharts (仅一次，指定版本提高稳定性) -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/map/js/china.js"></script>
+    <!-- 省份经纬度映射表（用于飞线） -->
+    <script>
+        const provinceCoord = {
+            '北京': [116.40, 39.90], '上海': [121.47, 31.23], '广东': [113.27, 23.13],
+            '四川': [104.06, 30.67], '浙江': [120.19, 30.26], '江苏': [118.78, 32.04],
+            '陕西': [108.95, 34.27], '河南': [113.65, 34.76], '湖北': [114.31, 30.52],
+            '山东': [117.00, 36.65]
+        };
+    </script>
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF', secondary: '#FF7D00', natural: '#00B42A',
+                        cultural: '#722ED1', redtour: '#F53F3F', dark: '#1D2129', light: '#F2F3F5'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+                        calligraphy: ['Ma Shan Zheng', 'ZCOOL KuaiLe', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px rgba(0, 0, 0, 0.08)',
+                        'hover': '0 8px 30px rgba(0, 0, 0, 0.12)',
+                        'btn': '0 2px 8px rgba(22, 93, 255, 0.3)',
+                    }
+                },
+            }
+        }
+    </script>
+    <!-- 引入线上古风字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .text-shadow { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+            .bg-gradient-overlay { background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%); }
+            .card-hover { transition: all 0.3s ease; }
+            .card-hover:hover { transform: translateY(-5px); }
+            .btn-primary { @apply bg-primary text-white px-4 py-2 rounded-lg font-medium shadow-btn transition-all hover:bg-primary/90 hover:shadow-lg hover:scale-105 active:scale-95; }
+            .btn-secondary { @apply bg-white border border-primary text-primary px-4 py-2 rounded-lg font-medium transition-all hover:bg-primary/5 hover:shadow-sm active:scale-95; }
+            .btn-filter { @apply px-4 py-2 rounded-lg font-medium transition-all hover:shadow-sm active:scale-95; }
+            .input-style { @apply w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all; }
+            .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .writing-vertical { writing-mode: vertical-rl; text-orientation: upright; }
+            .loading-spinner { border: 3px solid rgba(22, 93, 255, 0.1); border-radius: 50%; border-top: 3px solid #165DFF; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        }
+    </style>
+    <!-- 核心样式 -->
+    <style>
+        body { scroll-behavior: smooth; margin: 0; padding: 0; }
+        .banner-carousel {
+            position: relative; width: 100vw !important; height: clamp(300px, 50vh, 600px) !important;
+            overflow: hidden; border-radius: 0 !important; margin: 0 !important; padding: 0 !important;
+            box-shadow: none !important; left: 0 !important; transform: none !important;
+        }
+        .carousel-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); width: 100%; height: 100%; }
+        .carousel-item { flex: 0 0 100%; position: relative; width: 100%; height: 100%; background: linear-gradient(rgba(0, 20, 60, 0.7), rgba(0, 20, 60, 0.7)); }
+        .carousel-item .carousel-bg {
+            position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important;
+            background-size: cover !important; background-position: center center !important;
+            background-repeat: no-repeat !important; z-index: 1; transition: transform 8s ease;
+            background-color: #f2f3f5;
+        }
+        .carousel-item:hover .carousel-bg { transform: scale(1.05); }
+        .carousel-mask { position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 0 !important; z-index: 5; display: flex; justify-content: center; align-items: center; background: none !important; }
+        .carousel-text-container { display: flex; align-items: center; gap: clamp(10px, 2vw, 30px); z-index: 6; padding: 20px; }
+        .carousel-pinyin { font-size: clamp(12px, 1.5vw, 24px); color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3); font-family: "ZCOOL KuaiLe", "站酷高端黑", "汉仪尚巍手书", sans-serif; }
+        .carousel-calligraphy { font-size: clamp(24px, 4vw, 72px); font-weight: normal; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.5); font-family: "Ma Shan Zheng", "汉仪尚巍手书", "站酷高端黑", sans-serif; letter-spacing: clamp(2px, 0.6vw, 10px); }
+        .carousel-title, .carousel-desc { display: none; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%); width: clamp(40px, 5vw, 56px); height: clamp(40px, 5vw, 56px);
+            background: rgba(255,255,255,0.9); color: #165DFF; border: none; border-radius: 50%;
+            font-size: clamp(1rem, 1.5vw, 1.5rem); cursor: pointer; z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; touch-action: manipulation;
+        }
+        .carousel-btn:hover { background: white; transform: translateY(-50%) scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+        .prev { left: clamp(10px, 2vw, 20px); }
+        .next { right: clamp(10px, 2vw, 20px); }
+        .carousel-indicators { position: absolute; bottom: clamp(10px, 2vh, 20px); left: 50%; transform: translateX(-50%); display: flex; gap: clamp(8px, 1vw, 12px); z-index: 10; }
+        .indicator-dot { width: clamp(10px, 1.2vw, 12px); height: clamp(10px, 1.2vw, 12px); border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s ease; position: relative; touch-action: manipulation; }
+        .indicator-dot::after { content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; }
+        .indicator-dot.active { background: white !important; width: clamp(10px, 1.2vw, 12px) !important; border-radius: 50% !important; }
+        .active-filter { background-color: #165DFF !important; color: white !important; }
+        #tourismChart { width: 100%; height: clamp(300px, 40vw, 500px); border-radius: 12px; overflow: hidden; background-color: #f9fafc; }
+        .collect-btn { @apply px-3 py-1 rounded text-sm transition-all hover:shadow-sm; }
+        .collect-btn.bg-blue-500 { background-color: #165DFF !important; color: white !important; }
+        .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: rgba(29,33,41,0.9); color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 9999; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .video-container { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background-color: #000; }
+        .shanxi-feature-item { @apply flex items-start gap-3 mb-4; }
+        .shanxi-feature-icon { @apply w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0; }
+        .my-collection-section { @apply mb-8 bg-white p-6 rounded-2xl shadow-card; }
+        .collection-item { @apply flex flex-col md:flex-row md:items-center gap-4 p-4 border-b border-gray-100 last:border-0; }
+        .collection-item-img { @apply w-24 h-16 rounded-lg object-cover; }
+        .collection-item-info { @apply flex-1; }
+        .collection-item-actions { @apply flex gap-2; }
+        /* 图表容器底色 */
+        #chinaMapChart, #shanxiScenicChart { background-color: #f9fafc; border-radius: 12px; }
+    </style>
+</head>
+<body class="bg-light font-sans text-dark antialiased">
+    <!-- 顶部导航 -->
+    <header class="bg-gradient-to-r from-primary to-primary/90 text-white py-5 px-6 shadow-lg">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div>
+                    <h1 class="text-[clamp(1rem,2vw,1.6rem)] font-bold tracking-tight">
+                        <i class="fa-solid fa-mountain-sun mr-2"></i>陕西本地文旅轻量导航
+                    </h1>
+                    <p class="text-xs mt-1 text-white/80 max-w-md">大学生周末短途游专属指南 · 解锁陕西小众美景与人文</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-white/70 text-xs"><i class="fa-solid fa-calendar-days mr-1"></i>2026 文旅精选</span>
+                    <span class="h-4 w-px bg-white/30"></span>
+                    <span class="text-white/70 text-xs"><i class="fa-solid fa-location-dot mr-1"></i>陕西 · 全域覆盖</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 轮播组件 -->
+    <div class="banner-carousel">
+        <div class="carousel-wrapper">
+            <!-- 假第一张（最后一张真实图） -->
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/15/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">壶口瀑布 · 黄河之魂</h3>
+                    <p class="carousel-desc">黄河壶口瀑布，气势磅礴，涛声震天，是黄河最壮观的自然景观之一。</p>
+                </div>
+            </div>
+            <!-- 真实轮播项（1-5） -->
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/18/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">华山 · 奇险天下第一山</h3>
+                    <p class="carousel-desc">西岳华山，以雄奇险峻著称，长空栈道、鹞子翻身等景点堪称天下奇观，是户外徒步的绝佳选择。</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/28/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">兵马俑 · 世界第八大奇迹</h3>
+                    <p class="carousel-desc">秦始皇帝陵兵马俑，再现大秦帝国的军威，是了解中国古代历史与雕塑艺术的必去之地。</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/36/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">延安 · 红色革命圣地</h3>
+                    <p class="carousel-desc">延安革命纪念馆记录了中国共产党在延安的奋斗历程，是传承红色基因的重要教育基地。</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/42/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">大雁塔 · 古都西安地标</h3>
+                    <p class="carousel-desc">大雁塔为保存玄奘法师取回的经卷而建，是唐代建筑艺术的典范，见证古都千年历史。</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/15/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">壶口瀑布 · 黄河之魂</h3>
+                    <p class="carousel-desc">黄河壶口瀑布，气势磅礴，涛声震天，是黄河最壮观的自然景观之一。</p>
+                </div>
+            </div>
+            <!-- 假最后一张（第一张真实图） -->
+            <div class="carousel-item">
+                <div class="carousel-bg" style="background-image: url('https://picsum.photos/id/18/1920/1080');"></div>
+                <div class="carousel-mask">
+                    <div class="carousel-text-container">
+                        <div class="carousel-pinyin writing-vertical">SHANXI</div>
+                        <div class="carousel-calligraphy">陕西</div>
+                    </div>
+                    <h3 class="carousel-title">华山 · 奇险天下第一山</h3>
+                    <p class="carousel-desc">西岳华山，以雄奇险峻著称，长空栈道、鹞子翻身等景点堪称天下奇观，是户外徒步的绝佳选择。</p>
+                </div>
+            </div>
+        </div>
+        <!-- 切换按钮 -->
+        <button class="carousel-btn prev" aria-label="上一张轮播图"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="carousel-btn next" aria-label="下一张轮播图"><i class="fa-solid fa-chevron-right"></i></button>
+        <!-- 指示器 -->
+        <div class="carousel-indicators">
+            <span class="indicator-dot active" data-index="0"></span>
+            <span class="indicator-dot" data-index="1"></span>
+            <span class="indicator-dot" data-index="2"></span>
+            <span class="indicator-dot" data-index="3"></span>
+            <span class="indicator-dot" data-index="4"></span>
+        </div>
+    </div>
+    <!-- 轮播组件结束（注意：此处没有多余的 </div>） -->
+
+    <!-- ========== 双图表容器 ========== -->
+    <section class="container mx-auto px-6 py-10">
+        <div class="mb-8 text-center">
+            <h2 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-dark mb-2">文旅客流数据分析</h2>
+            <p class="text-gray-600">全国客流分布 · 陕西核心景点热度</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- 中国地图+飞机动效图表容器 -->
+            <div class="bg-white rounded-2xl shadow-card p-4">
+                <h3 class="text-lg font-medium text-primary mb-4 flex items-center">
+                    <i class="fa-solid fa-plane-departure mr-2"></i>全国旅客流向分布
+                </h3>
+                <div id="chinaMapChart" class="w-full h-[400px]"></div>
+            </div>
+            <!-- 陕西景点多维度图表容器 -->
+            <div class="bg-white rounded-2xl shadow-card p-4">
+                <h3 class="text-lg font-medium text-secondary mb-4 flex items-center">
+                    <i class="fa-solid fa-landmark mr-2"></i>陕西核心景点客流统计
+                </h3>
+                <div id="shanxiScenicChart" class="w-full h-[400px]"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心内容区 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 陕西旅游特色简介 + 视频区域 -->
+        <div class="mb-8 bg-white p-6 rounded-2xl shadow-card">
+            <h2 class="text-xl font-bold mb-6 text-dark">三秦大地 · 陕西旅游特色</h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="lg:w-1/2">
+                    <p class="text-gray-700 mb-6 leading-relaxed">
+                        陕西，古称"三秦"，是中华民族和华夏文明的重要发祥地之一，承载着周秦汉唐的盛世风华。这里既有黄河奔腾的豪迈，也有秦岭巍峨的秀美；既有十三朝古都的厚重底蕴，也有红色革命的峥嵘岁月。从兵马俑的雄兵列阵到大雁塔的晨钟暮鼓，从华山的奇险俊秀到壶口瀑布的气吞山河，陕西以其独特的自然与人文魅力，成为中国旅游版图中不可或缺的璀璨明珠。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="shanxi-feature-item"><div class="shanxi-feature-icon bg-cultural/10 text-cultural"><i class="fa-solid fa-landmark"></i></div><div><h3 class="font-bold text-dark mb-1">千年古都 · 历史底蕴</h3><p class="text-sm text-gray-600">西安作为十三朝古都，拥有兵马俑、大雁塔、城墙等世界级文化遗产，每一处都镌刻着中华历史的辉煌。</p></div></div>
+                        <div class="shanxi-feature-item"><div class="shanxi-feature-icon bg-natural/10 text-natural"><i class="fa-solid fa-mountain"></i></div><div><h3 class="font-bold text-dark mb-1">奇山秀水 · 自然之美</h3><p class="text-sm text-gray-600">华山奇险、太白山雄峻、壶口瀑布奔腾、秦岭山水秀美，自然景观与人文景观交相辉映。</p></div></div>
+                        <div class="shanxi-feature-item"><div class="shanxi-feature-icon bg-redtour/10 text-redtour"><i class="fa-solid fa-flag"></i></div><div><h3 class="font-bold text-dark mb-1">红色记忆 · 革命圣地</h3><p class="text-sm text-gray-600">延安作为中国革命的圣地，留存着枣园、杨家岭等革命旧址，是传承红色基因的重要阵地。</p></div></div>
+                        <div class="shanxi-feature-item"><div class="shanxi-feature-icon bg-secondary/10 text-secondary"><i class="fa-solid fa-utensils"></i></div><div><h3 class="font-bold text-dark mb-1">三秦美食 · 味蕾盛宴</h3><p class="text-sm text-gray-600">肉夹馍、凉皮、羊肉泡馍、biangbiang面等特色美食，展现陕西独特的饮食文化。</p></div></div>
+                    </div>
+                    <button class="btn-primary mt-6"><i class="fa-solid fa-book-open mr-2"></i>了解更多陕西文化</button>
+                </div>
+                <div class="lg:w-1/2">
+                    <div class="video-container w-full h-[300px] lg:h-[400px]">
+                        <iframe src="https://player.bilibili.com/player.html?aid=12345678&bvid=BV1xx411c7m8&cid=123456789&page=1&autoplay=0" width="100%" height="100%" frameborder="0" allowfullscreen="true" allow="autoplay; fullscreen; picture-in-picture" title="陕西旅游宣传片"></iframe>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500 text-center"><i class="fa-solid fa-film mr-1"></i>陕西文旅官方宣传片 | 解锁三秦大地的无限魅力</p>
+                    <div class="grid grid-cols-2 gap-3 mt-6">
+                        <div class="video-thumbnail relative rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"><img src="https://picsum.photos/id/18/400/225" alt="华山风光" class="w-full h-24 object-cover"><div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1 rounded">05:20</div><p class="text-xs mt-2 text-gray-700 line-clamp-2">华山全景游览 | 奇险天下第一山</p></div>
+                        <div class="video-thumbnail relative rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"><img src="https://picsum.photos/id/28/400/225" alt="兵马俑探秘" class="w-full h-24 object-cover"><div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1 rounded">08:15</div><p class="text-xs mt-2 text-gray-700 line-clamp-2">兵马俑深度探秘 | 大秦帝国的地下军团</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 筛选区域 -->
+        <div class="mb-8 bg-white p-6 rounded-2xl shadow-card">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <h2 class="text-xl font-bold text-dark">陕西文旅景点筛选</h2>
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn-filter active-filter bg-primary text-white" data-type="all">全部景点</button>
+                    <button class="btn-filter bg-white border border-gray-200 text-dark" data-type="natural">自然景观</button>
+                    <button class="btn-filter bg-white border border-gray-200 text-dark" data-type="cultural">人文古迹</button>
+                    <button class="btn-filter bg-white border border-gray-200 text-dark" data-type="redtour">红色文旅</button>
+                    <button class="btn-filter bg-white border border-gray-200 text-dark" data-type="leisure">都市休闲</button>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="md:w-2/3"><div class="relative"><input type="text" class="input-style pl-10" placeholder="搜索景点名称/城市/特色..." id="searchInput"><i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i></div></div>
+                <div class="md:w-1/3 flex gap-2">
+                    <select class="input-style" id="citySelect">
+                        <option value="all">全部城市</option><option value="xian">西安市</option><option value="baoji">宝鸡市</option><option value="xianyang">咸阳市</option><option value="yanan">延安市</option><option value="weinan">渭南市</option><option value="hanzhong">汉中市</option><option value="anan">安康市</option><option value="shangluo">商洛市</option><option value="yangling">杨凌示范区</option>
+                    </select>
+                    <button class="btn-primary" id="searchBtn"><i class="fa-solid fa-magnifying-glass mr-2"></i>搜索</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="mb-8 bg-white p-6 rounded-2xl shadow-card">
+            <h2 class="text-xl font-bold mb-4 text-dark">陕西文旅数据统计</h2>
+            <div id="tourismChart"></div>
+        </div>
+
+        <!-- 景点列表区域 -->
+        <div class="mb-8">
+            <h2 class="text-xl font-bold mb-6 text-dark">陕西热门文旅景点</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="spotList">
+                <!-- 景点卡片1 -->
+                <div class="bg-white rounded-xl shadow-card overflow-hidden card-hover" data-type="natural" data-city="xian">
+                    <div class="relative h-48"><img src="https://picsum.photos/id/18/800/600" alt="华山" class="w-full h-full object-cover"><div class="absolute top-3 left-3 bg-natural text-white text-xs px-2 py-1 rounded-full">自然景观</div><button class="collect-btn absolute top-3 right-3 bg-white/80 text-primary border border-primary/20" data-id="1"><i class="fa-regular fa-heart mr-1"></i>收藏</button></div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">华山</h3><div class="flex items-center text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1"></i><span>陕西省渭南市华阴市</span></div><p class="text-sm text-gray-600 line-clamp-2 mb-3">西岳华山，以雄奇险峻著称，长空栈道、鹞子翻身等景点堪称天下奇观，是户外徒步的绝佳选择。</p><div class="flex justify-between items-center"><div class="flex items-center text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><span class="ml-1 text-gray-500">4.8</span></div><button class="btn-secondary text-xs px-3 py-1 detail-btn" data-id="1"><i class="fa-solid fa-arrow-right mr-1"></i>查看详情</button></div></div>
+                </div>
+                <!-- 景点卡片2 -->
+                <div class="bg-white rounded-xl shadow-card overflow-hidden card-hover" data-type="cultural" data-city="xian">
+                    <div class="relative h-48"><img src="https://picsum.photos/id/28/800/600" alt="兵马俑" class="w-full h-full object-cover"><div class="absolute top-3 left-3 bg-cultural text-white text-xs px-2 py-1 rounded-full">人文古迹</div><button class="collect-btn absolute top-3 right-3 bg-white/80 text-primary border border-primary/20" data-id="2"><i class="fa-regular fa-heart mr-1"></i>收藏</button></div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">秦始皇兵马俑博物馆</h3><div class="flex items-center text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1"></i><span>陕西省西安市临潼区</span></div><p class="text-sm text-gray-600 line-clamp-2 mb-3">秦始皇帝陵兵马俑，再现大秦帝国的军威，是了解中国古代历史与雕塑艺术的必去之地。</p><div class="flex justify-between items-center"><div class="flex items-center text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span class="ml-1 text-gray-500">4.9</span></div><button class="btn-secondary text-xs px-3 py-1 detail-btn" data-id="2"><i class="fa-solid fa-arrow-right mr-1"></i>查看详情</button></div></div>
+                </div>
+                <!-- 景点卡片3 -->
+                <div class="bg-white rounded-xl shadow-card overflow-hidden card-hover" data-type="redtour" data-city="yanan">
+                    <div class="relative h-48"><img src="https://picsum.photos/id/36/800/600" alt="延安革命纪念馆" class="w-full h-full object-cover"><div class="absolute top-3 left-3 bg-redtour text-white text-xs px-2 py-1 rounded-full">红色文旅</div><button class="collect-btn absolute top-3 right-3 bg-white/80 text-primary border border-primary/20" data-id="3"><i class="fa-regular fa-heart mr-1"></i>收藏</button></div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">延安革命纪念馆</h3><div class="flex items-center text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1"></i><span>陕西省延安市宝塔区</span></div><p class="text-sm text-gray-600 line-clamp-2 mb-3">延安革命纪念馆记录了中国共产党在延安的奋斗历程，是传承红色基因的重要教育基地。</p><div class="flex justify-between items-center"><div class="flex items-center text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span class="ml-1 text-gray-500">4.7</span></div><button class="btn-secondary text-xs px-3 py-1 detail-btn" data-id="3"><i class="fa-solid fa-arrow-right mr-1"></i>查看详情</button></div></div>
+                </div>
+                <!-- 景点卡片4 -->
+                <div class="bg-white rounded-xl shadow-card overflow-hidden card-hover" data-type="leisure" data-city="xian">
+                    <div class="relative h-48"><img src="https://picsum.photos/id/42/800/600" alt="大雁塔" class="w-full h-full object-cover"><div class="absolute top-3 left-3 bg-secondary text-white text-xs px-2 py-1 rounded-full">都市休闲</div><button class="collect-btn absolute top-3 right-3 bg-white/80 text-primary border border-primary/20" data-id="4"><i class="fa-regular fa-heart mr-1"></i>收藏</button></div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">大雁塔·大唐不夜城</h3><div class="flex items-center text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1"></i><span>陕西省西安市雁塔区</span></div><p class="text-sm text-gray-600 line-clamp-2 mb-3">大雁塔为保存玄奘法师取回的经卷而建，大唐不夜城重现盛唐繁华，是夜游西安的必打卡地。</p><div class="flex justify-between items-center"><div class="flex items-center text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><span class="ml-1 text-gray-500">4.8</span></div><button class="btn-secondary text-xs px-3 py-1 detail-btn" data-id="4"><i class="fa-solid fa-arrow-right mr-1"></i>查看详情</button></div></div>
+                </div>
+                <!-- 景点卡片5 -->
+                <div class="bg-white rounded-xl shadow-card overflow-hidden card-hover" data-type="natural" data-city="yanan">
+                    <div class="relative h-48"><img src="https://picsum.photos/id/15/800/600" alt="壶口瀑布" class="w-full h-full object-cover"><div class="absolute top-3 left-3 bg-natural text-white text-xs px-2 py-1 rounded-full">自然景观</div><button class="collect-btn absolute top-3 right-3 bg-white/80 text-primary border border-primary/20" data-id="5"><i class="fa-regular fa-heart mr-1"></i>收藏</button></div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">黄河壶口瀑布</h3><div class="flex items-center text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1"></i><span>陕西省延安市宜川县</span></div><p class="text-sm text-gray-600 line-clamp-2 mb-3">黄河壶口瀑布，气势磅礴，涛声震天，是黄河最壮观的自然景观之一，四季景色各有不同。</p><div class="flex justify-between items-center"><div class="flex items-center text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><span class="ml-1 text-gray-500">4.8</span></div><button class="btn-secondary text-xs px-3 py-1 detail-btn" data-id="5"><i class="fa-solid fa-arrow-right mr-1"></i>查看详情</button></div></div>
+                </div>
+                <!-- 景点卡片6 -->
+                <div class="bg-white rounded-xl shadow-card overflow-hidden card-hover" data-type="cultural" data-city="xianyang">
+                    <div class="relative h-48"><img src="https://picsum.photos/id/54/800/600" alt="乾陵" class="w-full h-full object-cover"><div class="absolute top-3 left-3 bg-cultural text-white text-xs px-2 py-1 rounded-full">人文古迹</div><button class="collect-btn absolute top-3 right-3 bg-white/80 text-primary border border-primary/20" data-id="6"><i class="fa-regular fa-heart mr-1"></i>收藏</button></div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">乾陵</h3><div class="flex items-center text-xs text-gray-500 mb-2"><i class="fa-solid fa-location-dot mr-1"></i><span>陕西省咸阳市乾县</span></div><p class="text-sm text-gray-600 line-clamp-2 mb-3">乾陵是唐高宗李治与武则天的合葬墓，是唐十八陵中保存最完好的一座，无字碑千古之谜引人探究。</p><div class="flex justify-between items-center"><div class="flex items-center text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span class="ml-1 text-gray-500">4.6</span></div><button class="btn-secondary text-xs px-3 py-1 detail-btn" data-id="6"><i class="fa-solid fa-arrow-right mr-1"></i>查看详情</button></div></div>
+                </div>
+            </div>
+            <div class="mt-8 text-center"><button class="btn-primary" id="loadMoreBtn"><i class="fa-solid fa-plus mr-2"></i>加载更多景点</button></div>
+        </div>
+
+        <!-- 我的收藏模块 -->
+        <div class="my-collection-section">
+            <h2 class="text-xl font-bold mb-6 text-dark flex items-center"><i class="fa-solid fa-heart text-red-500 mr-2"></i>我的收藏</h2>
+            <div id="collectionList" class="space-y-2"><div class="text-center text-gray-500 py-8" id="emptyCollection"><i class="fa-solid fa-heart-broken text-4xl mb-3 text-gray-300"></i><p>暂无收藏的景点，快去收藏你喜欢的景点吧！</p></div></div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8 px-6">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between gap-6">
+                <div class="md:w-1/3"><h3 class="text-lg font-bold mb-3">陕西本地文旅轻量导航</h3><p class="text-sm text-gray-400">专为大学生打造的陕西短途游指南，带你发现不一样的陕西美景与人文。</p><div class="flex gap-4 mt-4 text-xl"><a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-weixin"></i></a><a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-weibo"></i></a><a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-douyin"></i></a></div></div>
+                <div><h4 class="text-md font-medium mb-3">快速链接</h4><ul class="text-sm text-gray-400 space-y-2"><li><a href="#" class="hover:text-white transition-colors">景点大全</a></li><li><a href="#" class="hover:text-white transition-colors">旅游攻略</a></li><li><a href="#" class="hover:text-white transition-colors">学生优惠</a></li><li><a href="#" class="hover:text-white transition-colors">关于我们</a></li></ul></div>
+                <div><h4 class="text-md font-medium mb-3">联系我们</h4><ul class="text-sm text-gray-400 space-y-2"><li><i class="fa-solid fa-envelope mr-2"></i>contact@shanxi-tour.com</li><li><i class="fa-solid fa-phone mr-2"></i>400-123-4567</li><li><i class="fa-solid fa-map-marker-alt mr-2"></i>陕西省西安市雁塔区</li></ul></div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-500">© 2026 陕西本地文旅轻量导航 版权所有 | 陕ICP备12345678号</div>
+        </div>
+    </footer>
+
+    <!-- ========== 统一图表初始化脚本 ========== -->
+    <script>
+        (function() {
+            function initAllCharts() {
+                if (typeof echarts === 'undefined') return;
+
+                // tourismChart
+                const tourismDom = document.getElementById('tourismChart');
+                if (tourismDom) {
+                    const tourismChart = echarts.init(tourismDom);
+                    tourismChart.setOption({
+                        title: { text: '陕西各类文旅景点访问量', left: 'center', textStyle: { fontSize: 16 } },
+                        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                        legend: { data: ['自然景观', '人文古迹', '红色文旅', '都市休闲'], bottom: 0 },
+                        grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
+                        xAxis: { type: 'category', data: ['西安', '宝鸡', '咸阳', '延安', '渭南', '汉中'], axisLabel: { rotate: 30 } },
+                        yAxis: { type: 'value', name: '月访问量（万人次）' },
+                        series: [
+                            { name: '自然景观', type: 'bar', data: [120,200,150,80,180,220], itemStyle: { color: '#00B42A' } },
+                            { name: '人文古迹', type: 'bar', data: [300,180,250,100,120,150], itemStyle: { color: '#722ED1' } },
+                            { name: '红色文旅', type: 'bar', data: [80,50,60,280,70,40], itemStyle: { color: '#F53F3F' } },
+                            { name: '都市休闲', type: 'bar', data: [450,120,180,60,90,80], itemStyle: { color: '#FF7D00' } }
+                        ]
+                    });
+                    window.addEventListener('resize', () => tourismChart.resize());
+                }
+
+                // chinaMapChart
+                const chinaMapDom = document.getElementById('chinaMapChart');
+                if (chinaMapDom) {
+                    const chinaMapChart = echarts.init(chinaMapDom);
+                    const flightData = [
+                        { from: '北京', to: '陕西', value: 85000 }, { from: '上海', to: '陕西', value: 92000 },
+                        { from: '广东', to: '陕西', value: 78000 }, { from: '四川', to: '陕西', value: 65000 },
+                        { from: '浙江', to: '陕西', value: 71000 }, { from: '江苏', to: '陕西', value: 80000 },
+                    ];
+                    const provinceData = [
+                        { name: '北京', value: 120000 }, { name: '上海', value: 150000 }, { name: '广东', value: 180000 },
+                        { name: '四川', value: 95000 }, { name: '浙江', value: 110000 }, { name: '江苏', value: 130000 },
+                        { name: '陕西', value: 200000 }, { name: '河南', value: 85000 }, { name: '湖北', value: 75000 },
+                        { name: '山东', value: 90000 },
+                    ];
+                    chinaMapChart.setOption({
+                        geo: { map: 'china', roam: true, label: { show: true, fontSize: 9 }, itemStyle: { areaColor: '#e8f4ff', borderColor: '#165DFF' }, emphasis: { itemStyle: { areaColor: '#409EFF' } } },
+                        series: [
+                            { type: 'map', map: 'china', geoIndex: 0, data: provinceData },
+                            {
+                                type: 'lines', coordinateSystem: 'geo',
+                                effect: { show: true, period: 15, trailLength: 0.7, symbol: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z', symbolSize: 15, color: '#FF7D00' },
+                                lineStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#FF7D00'},{offset:1,color:'#165DFF'}]), width: 2, opacity: 0.8, curveness: 0.2 },
+                                data: flightData.map(item => ({ coords: [ provinceCoord[item.from] || [116.40,39.90], provinceCoord[item.to] || [108.95,34.27] ], value: item.value }))
+                            }
+                        ],
+                        visualMap: { show: true, orient: 'horizontal', left: 'center', bottom: '10px', min: 50000, max: 200000, text: ['旅客数（高）', '旅客数（低）'], inRange: { color: ['#e8f4ff', '#b3d9ff', '#409EFF', '#165DFF'] } }
+                    });
+                    window.addEventListener('resize', () => chinaMapChart.resize());
+                }
+
+                // shanxiScenicChart
+                const shanxiDom = document.getElementById('shanxiScenicChart');
+                if (shanxiDom) {
+                    const shanxiChart = echarts.init(shanxiDom);
+                    const scenicData = [
+                        { name: '兵马俑', visitor: 185000, rate: 98.5, hot: 95 },
+                        { name: '华山', visitor: 162000, rate: 97.8, hot: 92 },
+                        { name: '大雁塔', visitor: 148000, rate: 96.5, hot: 88 },
+                        { name: '壶口瀑布', visitor: 135000, rate: 97.2, hot: 90 },
+                        { name: '延安红馆', visitor: 118000, rate: 98.0, hot: 85 },
+                        { name: '大唐不夜城', visitor: 192000, rate: 98.8, hot: 98 },
+                    ];
+                    shanxiChart.setOption({
+                        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                        legend: { data: ['旅客数', '好评率', '热度'], top: 0 },
+                        grid: { left: '5%', right: '15%', bottom: '5%', top: '15%', containLabel: true },
+                        xAxis: { type: 'category', data: scenicData.map(d => d.name), axisLabel: { rotate: 15 } },
+                        yAxis: [
+                            { type: 'value', name: '旅客数（人次）', nameTextStyle: { color: '#165DFF' } },
+                            { type: 'value', name: '好评率/热度（%/分）', nameTextStyle: { color: '#FF7D00' }, max: 100 }
+                        ],
+                        series: [
+                            { name: '旅客数', type: 'bar', yAxisIndex: 0, data: scenicData.map(d => d.visitor), barWidth: '40%', itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#165DFF'},{offset:1,color:'#409EFF'}]), borderRadius: [4,4,0,0] } },
+                            { name: '好评率', type: 'line', yAxisIndex: 1, data: scenicData.map(d => d.rate), symbol: 'circle', lineStyle: { color: '#00B42A', width: 3 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,180,42,0.3)'},{offset:1,color:'rgba(0,180,42,0)'}]) } },
+                            { name: '热度', type: 'line', yAxisIndex: 1, data: scenicData.map(d => d.hot), symbol: 'triangle', lineStyle: { color: '#F53F3F', width: 3, type: 'dashed' } },
+                            { name: '客流占比', type: 'pie', radius: ['30%', '45%'], center: ['80%', '30%'], data: scenicData.map(d => ({ name: d.name, value: d.visitor })), label: { show: true, fontSize: 8, formatter: '{b}: {c} 人次' } }
+                        ]
+                    });
+                    window.addEventListener('resize', () => shanxiChart.resize());
+                }
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAllCharts);
+            else initAllCharts();
+        })();
+    </script>
+
+    <!-- 原有功能脚本（轮播、筛选、收藏等） -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 轮播功能
+            const carouselWrapper = document.querySelector('.carousel-wrapper');
+            const prevBtn = document.querySelector('.prev');
+            const nextBtn = document.querySelector('.next');
+            const indicators = document.querySelectorAll('.indicator-dot');
+            const totalRealItems = 5;
+            let currentIndex = 1;
+            let isAnimating = false;
+            let autoPlayTimer;
+            if (carouselWrapper) {
+                carouselWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                function startAutoPlay() { autoPlayTimer = setInterval(() => { nextSlide(); }, 5000); }
+                function stopAutoPlay() { clearInterval(autoPlayTimer); }
+                function updateIndicators() { indicators.forEach((dot, idx) => { if (idx === currentIndex - 1) dot.classList.add('active'); else dot.classList.remove('active'); }); }
+                function nextSlide() {
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    currentIndex++;
+                    carouselWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    carouselWrapper.addEventListener('transitionend', function onEnd() {
+                        if (currentIndex === totalRealItems + 1) {
+                            carouselWrapper.style.transition = 'none';
+                            currentIndex = 1;
+                            carouselWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                            setTimeout(() => { carouselWrapper.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)'; }, 50);
+                        }
+                        updateIndicators();
+                        isAnimating = false;
+                        carouselWrapper.removeEventListener('transitionend', onEnd);
+                    }, { once: true });
+                    updateIndicators();
+                }
+                function prevSlide() {
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    currentIndex--;
+                    carouselWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    carouselWrapper.addEventListener('transitionend', function onEnd() {
+                        if (currentIndex === 0) {
+                            carouselWrapper.style.transition = 'none';
+                            currentIndex = totalRealItems;
+                            carouselWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                            setTimeout(() => { carouselWrapper.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)'; }, 50);
+                        }
+                        updateIndicators();
+                        isAnimating = false;
+                        carouselWrapper.removeEventListener('transitionend', onEnd);
+                    }, { once: true });
+                    updateIndicators();
+                }
+                indicators.forEach((dot, idx) => {
+                    dot.addEventListener('click', () => {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        currentIndex = idx + 1;
+                        carouselWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                        carouselWrapper.addEventListener('transitionend', function onEnd() {
+                            updateIndicators();
+                            isAnimating = false;
+                            carouselWrapper.removeEventListener('transitionend', onEnd);
+                        }, { once: true });
+                        updateIndicators();
+                    });
+                });
+                prevBtn.addEventListener('click', () => { stopAutoPlay(); prevSlide(); startAutoPlay(); });
+                nextBtn.addEventListener('click', () => { stopAutoPlay(); nextSlide(); startAutoPlay(); });
+                document.querySelector('.banner-carousel').addEventListener('mouseenter', stopAutoPlay);
+                document.querySelector('.banner-carousel').addEventListener('mouseleave', startAutoPlay);
+                startAutoPlay();
+            }
+
+            // 筛选功能
+            const filterButtons = document.querySelectorAll('.btn-filter');
+            const spotCards = document.querySelectorAll('#spotList > div');
+            const searchInput = document.getElementById('searchInput');
+            const citySelect = document.getElementById('citySelect');
+            const searchBtn = document.getElementById('searchBtn');
+            function filterSpots() {
+                const activeType = document.querySelector('.btn-filter.active-filter')?.dataset.type || 'all';
+                const searchText = searchInput?.value.toLowerCase().trim() || '';
+                const selectedCity = citySelect?.value || 'all';
+                spotCards.forEach(card => {
+                    const cardType = card.dataset.type;
+                    const cardCity = card.dataset.city;
+                    const cardText = card.textContent.toLowerCase();
+                    let isTypeMatch = activeType === 'all' || cardType === activeType;
+                    let isCityMatch = selectedCity === 'all' || cardCity === selectedCity;
+                    let isSearchMatch = searchText === '' || cardText.includes(searchText);
+                    card.style.display = (isTypeMatch && isCityMatch && isSearchMatch) ? 'block' : 'none';
+                });
+            }
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => {
+                        b.classList.remove('active-filter', 'bg-primary', 'text-white');
+                        b.classList.add('bg-white', 'border', 'border-gray-200', 'text-dark');
+                    });
+                    btn.classList.add('active-filter', 'bg-primary', 'text-white');
+                    btn.classList.remove('bg-white', 'border', 'border-gray-200', 'text-dark');
+                    filterSpots();
+                });
+            });
+            if (searchBtn) searchBtn.addEventListener('click', filterSpots);
+            if (searchInput) searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') filterSpots(); });
+            if (citySelect) citySelect.addEventListener('change', filterSpots);
+
+            // 收藏功能
+            const spotOfficialUrls = { 1: 'https://www.huashan.gov.cn/', 2: 'https://www.bmy.com.cn/', 3: 'https://www.yagjng.com/', 4: 'https://www.dayanta.com/', 5: 'https://www.hukou-waterfall.com/', 6: 'https://www.qianling.gov.cn/' };
+            function showToast(msg, duration = 3000) {
+                let toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 10);
+                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => document.body.removeChild(toast), 300); }, duration);
+            }
+            function renderCollectionList() {
+                const collectionList = document.getElementById('collectionList');
+                const emptyCollection = document.getElementById('emptyCollection');
+                const collectData = JSON.parse(localStorage.getItem('collectSpots') || '[]');
+                while (collectionList.children.length > 1) collectionList.removeChild(collectionList.lastChild);
+                if (collectData.length === 0) { emptyCollection.style.display = 'block'; return; }
+                emptyCollection.style.display = 'none';
+                collectData.forEach(spot => {
+                    const item = document.createElement('div');
+                    item.className = 'collection-item';
+                    item.innerHTML = `
+                        <img src="${spot.image}" alt="${spot.name}" class="collection-item-img">
+                        <div class="collection-item-info">
+                            <h3 class="font-bold text-lg">${spot.name}</h3>
+                            <p class="text-xs text-gray-500 mb-1"><i class="fa-solid fa-location-dot mr-1"></i>${spot.location}</p>
+                            <p class="text-sm text-gray-600 line-clamp-1">${spot.desc}</p>
+                            <p class="text-xs text-gray-400 mt-1"><i class="fa-solid fa-clock mr-1"></i>收藏时间：${spot.collectTime}</p>
+                        </div>
+                        <div class="collection-item-actions">
+                            ${spot.url ? `<a href="${spot.url}" target="_blank" class="btn-secondary text-xs px-3 py-1"><i class="fa-solid fa-globe mr-1"></i>官网</a>` : ''}
+                            <button class="btn-secondary text-xs px-3 py-1 cancel-collect" data-id="${spot.id}"><i class="fa-solid fa-trash mr-1"></i>取消收藏</button>
+                        </div>
+                    `;
+                    collectionList.appendChild(item);
+                });
+                document.querySelectorAll('.cancel-collect').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const spotId = this.dataset.id;
+                        let collectData = JSON.parse(localStorage.getItem('collectSpots') || '[]');
+                        collectData = collectData.filter(item => item.id !== spotId);
+                        localStorage.setItem('collectSpots', JSON.stringify(collectData));
+                        initCollectState();
+                        showToast('已取消收藏');
+                    });
+                });
+            }
+            function getSpotInfo(spotId) {
+                const btn = document.querySelector(`.collect-btn[data-id="${spotId}"]`);
+                if (!btn) return {};
+                const card = btn.closest('.card-hover');
+                return {
+                    id: spotId,
+                    name: card.querySelector('h3').textContent,
+                    location: card.querySelector('.flex.items-center.text-xs.text-gray-500 span').textContent,
+                    desc: card.querySelector('p').textContent,
+                    image: card.querySelector('img').src,
+                    url: spotOfficialUrls[spotId] || '',
+                    collectTime: new Date().toLocaleString()
+                };
+            }
+            function initCollectState() {
+                const collectData = JSON.parse(localStorage.getItem('collectSpots') || '[]');
+                document.querySelectorAll('.collect-btn').forEach(btn => {
+                    const spotId = btn.dataset.id;
+                    const isCollected = collectData.some(item => item.id === spotId);
+                    if (isCollected) {
+                        btn.classList.add('bg-blue-500');
+                        btn.classList.remove('bg-white/80', 'text-primary', 'border', 'border-primary/20');
+                        btn.innerHTML = '<i class="fa-solid fa-heart mr-1"></i>已收藏';
+                    } else {
+                        btn.classList.remove('bg-blue-500');
+                        btn.classList.add('bg-white/80', 'text-primary', 'border', 'border-primary/20');
+                        btn.innerHTML = '<i class="fa-regular fa-heart mr-1"></i>收藏';
+                    }
+                });
+                renderCollectionList();
+            }
+            document.querySelectorAll('.collect-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const spotId = this.dataset.id;
+                    let collectData = JSON.parse(localStorage.getItem('collectSpots') || '[]');
+                    const isCollected = this.classList.contains('bg-blue-500');
+                    if (isCollected) {
+                        collectData = collectData.filter(item => item.id !== spotId);
+                        this.classList.remove('bg-blue-500');
+                        this.classList.add('bg-white/80', 'text-primary', 'border', 'border-primary/20');
+                        this.innerHTML = '<i class="fa-regular fa-heart mr-1"></i>收藏';
+                        showToast(`已取消收藏：${getSpotInfo(spotId).name}`);
+                    } else {
+                        collectData.push(getSpotInfo(spotId));
+                        this.classList.add('bg-blue-500');
+                        this.classList.remove('bg-white/80', 'text-primary', 'border', 'border-primary/20');
+                        this.innerHTML = '<i class="fa-solid fa-heart mr-1"></i>已收藏';
+                        showToast(`已收藏：${getSpotInfo(spotId).name}`);
+                    }
+                    localStorage.setItem('collectSpots', JSON.stringify(collectData));
+                    renderCollectionList();
+                });
+            });
+            document.querySelectorAll('.detail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const spotId = this.dataset.id;
+                    const url = spotOfficialUrls[spotId];
+                    if (url) { window.open(url, '_blank'); showToast('正在前往景点官网'); }
+                    else showToast('该景点暂未配置官网地址');
+                });
+            });
+            document.getElementById('loadMoreBtn')?.addEventListener('click', function() {
+                this.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fa-solid fa-plus mr-2"></i>已加载全部';
+                    this.disabled = true;
+                    this.classList.add('opacity-70', 'cursor-not-allowed');
+                    showToast('已加载全部景点');
+                }, 1500);
+            });
+            initCollectState();
+        });
+    </script>
+</body>
+</html>

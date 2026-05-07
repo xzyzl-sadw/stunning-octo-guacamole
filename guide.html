@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅游指南 - 数智轻行 智游三秦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        natural: '#00B42A',
+                        cultural: '#722ED1',
+                        redtour: '#F53F3F',
+                        dark: '#1D2129'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        html { font-size: 18px; }
+        
+        body {
+            background: url('img/陕西.jpg') center center / cover fixed no-repeat;
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 50px -12px rgba(22, 93, 255, 0.15);
+        }
+        
+        .hero-gradient { background: transparent; position: relative; overflow: hidden; }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: bgMove 20s linear infinite;
+        }
+        
+        @keyframes bgMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-60px) translateY(-60px); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .guide-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .guide-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px -15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .route-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .route-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.25);
+        }
+        
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+        
+        .modal-content {
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .upload-zone {
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.02);
+        }
+        
+        .upload-zone:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .footer-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .season-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .season-card:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        /* 地铁图缩放容器 */
+        .metro-map-container {
+            overflow: hidden;
+            position: relative;
+            background: #fff;
+            border-radius: 12px;
+        }
+        .metro-scroll-area {
+            width: 100%;
+            max-height: 500px;
+            min-height: 300px;
+            overflow: auto;
+            cursor: grab;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #ccc transparent;
+        }
+        .metro-scroll-area::-webkit-scrollbar {
+            height: 6px; width: 6px;
+        }
+        .metro-scroll-area::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        .metro-scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .metro-scroll-area:active { cursor: grabbing; }
+        .metro-img {
+            max-width: none;
+            user-select: none;
+            display: block;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 10;
+        }
+        .zoom-btn {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: bold;
+            color: #333; border: none; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .zoom-btn:hover { background: #667eea; color: white; }
+        .zoom-level {
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            padding: 2px 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div>
+
+    <header class="nav-glass sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg transform group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-compass text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-lg gradient-text">数智轻行 智游三秦</div>
+                        <div class="text-xs text-gray-500">轻量 · 便捷 · 精准</div>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="about.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">关于陕西</a>
+                    <a href="culture.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">文化特色</a>
+                    <a href="attractions.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">美食推荐</a>
+                    <a href="guide.html" class="text-sm gradient-text font-bold">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">联系我们</a>
+                    <div class="flex items-center gap-3 ml-4">
+                        <a href="auth.html" class="px-5 py-2.5 border-2 border-purple-500 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-50 transition-all">登录</a>
+                        <a href="auth.html" class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all">注册</a>
+                    </div>
+                </nav>
+                <button class="md:hidden text-gray-600" id="mobileMenuBtn">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <nav class="md:hidden mt-4 pb-4 border-t border-gray-100 pt-4" id="mobileMenu" style="display: none;">
+                <div class="flex flex-col gap-3">
+                    <a href="about.html" class="text-sm text-gray-600 py-2">关于陕西</a>
+                    <a href="culture.html" class="text-sm text-gray-600 py-2">文化特色</a>
+                    <a href="attractions.html" class="text-sm text-gray-600 py-2">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 py-2">美食推荐</a>
+                    <a href="guide.html" class="text-sm gradient-text font-bold py-2">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 py-2">联系我们</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题 -->
+    <div class="hero-gradient text-gray-900 py-12 relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <i class="fa-solid fa-map mr-3 floating"></i>旅游指南
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">实用旅游攻略，让您的陕西之旅更轻松愉快</p>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-10 -mt-6 relative z-20">
+        <!-- 地铁图 | 最佳时间+注意事项 左右布局 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- 左侧：西安地铁线路图（全高） -->
+            <div>
+                <h2 class="text-xl font-bold mb-4 flex items-center gradient-text">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg mr-3">
+                        <i class="fa-solid fa-train-subway"></i>
+                    </div>
+                    西安地铁线路图
+                </h2>
+                <div class="guide-card rounded-2xl p-5">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
+                        <h3 class="font-bold mb-3 gradient-text text-center">西安地铁全线图</h3>
+                        <div class="metro-map-container" id="metroMapContainer" style="align-self: start;">
+                            <div class="zoom-controls">
+                                <button class="zoom-btn" onclick="metroZoom(1.2)" title="放大"><i class="fa-solid fa-plus"></i></button>
+                                <div class="zoom-level" id="metroZoomLevel">100%</div>
+                                <button class="zoom-btn" onclick="metroZoom(0.8)" title="缩小"><i class="fa-solid fa-minus"></i></button>
+                                <button class="zoom-btn" onclick="metroReset()" title="重置"><i class="fa-solid fa-rotate-right"></i></button>
+                            </div>
+                            <div class="metro-scroll-area">
+                                <img src="img/西安地铁线路图.png" alt="西安地铁线路图" class="metro-img" draggable="false">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：最佳旅游时间 + 注意事项 垂直堆叠 -->
+            <div class="space-y-8">
+                <!-- 各景点最佳旅游时间 -->
+                <div>
+                    <h2 class="text-xl font-bold mb-4 flex items-center gradient-text">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg mr-3">
+                            <i class="fa-solid fa-calendar"></i>
+                        </div>
+                        四季风貌
+                    </h2>
+                    <div class="space-y-3">
+                        <div class="season-card p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100" onclick="showSeasonDetail('spring')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-white">
+                                    <i class="fa-solid fa-sun text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-sm mb-1">春季 · 3-5月</h3>
+                                    <p class="text-xs text-gray-600">适合游玩：华山（春暖花开，登山舒适）、大唐不夜城、汉中油菜花海</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="season-card p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border border-yellow-100" onclick="showSeasonDetail('summer')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center text-white">
+                                    <i class="fa-solid fa-temperature-high text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-sm mb-1">夏季 · 6-8月</h3>
+                                    <p class="text-xs text-gray-600">适合游玩：壶口瀑布（水量充沛，景色壮观）、太白山（避暑胜地）</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="season-card p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100" onclick="showSeasonDetail('autumn')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white">
+                                    <i class="fa-solid fa-leaf text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-sm mb-1">秋季 · 9-11月</h3>
+                                    <p class="text-xs text-gray-600">适合游玩：兵马俑、城墙（秋高气爽，游览舒适）、法门寺</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="season-card p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100" onclick="showSeasonDetail('winter')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white">
+                                    <i class="fa-solid fa-snowflake text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-sm mb-1">冬季 · 12-2月</h3>
+                                    <p class="text-xs text-gray-600">适合游玩：西安市区室内景点（历史博物馆、回民街美食）、温泉（华清池）</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 注意事项（紧跟在最佳时间下方） -->
+                <div>
+                    <h2 class="text-xl font-bold mb-5 flex items-center gradient-text">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg mr-3">
+                            <i class="fa-solid fa-circle-exclamation text-sm"></i>
+                        </div>
+                        注意事项
+                    </h2>
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white mx-auto mb-3">
+                                    <i class="fa-solid fa-passport text-sm"></i>
+                                </div>
+                                <h3 class="font-bold text-sm mb-2 gradient-text">证件准备</h3>
+                                <p class="text-xs text-gray-500 leading-relaxed">身份证、学生证、优惠证件</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-amber-50 hover:bg-amber-100 transition-colors">
+                                <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white mx-auto mb-3">
+                                    <i class="fa-solid fa-cloud-sun text-sm"></i>
+                                </div>
+                                <h3 class="font-bold text-sm mb-2" style="color: #FF7D00;">天气准备</h3>
+                                <p class="text-xs text-gray-500 leading-relaxed">关注天气，备好雨具防晒</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-colors">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center text-white mx-auto mb-3">
+                                    <i class="fa-solid fa-credit-card text-sm"></i>
+                                </div>
+                                <h3 class="font-bold text-sm mb-2" style="color: #00B42A;">消费提示</h3>
+                                <p class="text-xs text-gray-500 leading-relaxed">移动支付为主，自带饮用水</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-red-50 hover:bg-red-100 transition-colors">
+                                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center text-white mx-auto mb-3">
+                                    <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                                </div>
+                                <h3 class="font-bold text-sm mb-2" style="color: #F53F3F;">安全提示</h3>
+                                <p class="text-xs text-gray-500 leading-relaxed">贵重物品随身，登山注意安全</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐路线 | 用户上传路线 左右布局 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- 左侧：推荐路线 -->
+            <div>
+                <h2 class="text-xl font-bold mb-4 flex items-center gradient-text">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg mr-3">
+                        <i class="fa-solid fa-route"></i>
+                    </div>
+                    推荐路线
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-5 border border-purple-100 cursor-pointer hover:shadow-lg transition-all" onclick="showRouteGuide('oneday')">
+                        <h3 class="font-bold mb-4 gradient-text flex items-center">
+                            <i class="fa-solid fa-clock mr-2"></i>1日游精华线路
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 bg-white rounded-lg p-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-lg flex items-center justify-center text-sm font-bold">1</div>
+                                <p class="text-sm font-medium">秦始皇兵马俑</p>
+                            </div>
+                            <div class="flex items-center gap-3 bg-white rounded-lg p-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-lg flex items-center justify-center text-sm font-bold">2</div>
+                                <p class="text-sm font-medium">回民街午餐</p>
+                            </div>
+                            <div class="flex items-center gap-3 bg-white rounded-lg p-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-lg flex items-center justify-center text-sm font-bold">3</div>
+                                <p class="text-sm font-medium">城墙骑行 + 大唐不夜城</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-purple-100 text-center">
+                            <span class="text-sm text-purple-600 font-medium"><i class="fa-solid fa-hand-pointer mr-1"></i>点击查看详细路线指南</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-5 border border-orange-100 cursor-pointer hover:shadow-lg transition-all" onclick="showRouteGuide('threeday')">
+                        <h3 class="font-bold mb-4 flex items-center" style="color: #FF7D00;">
+                            <i class="fa-solid fa-clock mr-2"></i>3日深度游线路
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 bg-white rounded-lg p-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">D1</div>
+                                <p class="text-sm font-medium">兵马俑-华清池-城墙</p>
+                            </div>
+                            <div class="flex items-center gap-3 bg-white rounded-lg p-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">D2</div>
+                                <p class="text-sm font-medium">华山一日游</p>
+                            </div>
+                            <div class="flex items-center gap-3 bg-white rounded-lg p-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">D3</div>
+                                <p class="text-sm font-medium">延安-壶口瀑布</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-orange-100 text-center">
+                            <span class="text-sm text-orange-600 font-medium"><i class="fa-solid fa-hand-pointer mr-1"></i>点击查看详细路线指南</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：用户上传路线 -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold flex items-center gradient-text">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg mr-3">
+                            <i class="fa-solid fa-upload text-sm"></i>
+                        </div>
+                        用户上传路线
+                        <span class="text-xs font-normal text-gray-500 ml-2">(分享您的行程)</span>
+                    </h2>
+                    <button onclick="showUploadModal()" class="btn-primary px-5 py-2.5 text-white rounded-full text-base font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i>上传路线
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="userRoutesList"></div>
+                <div id="emptyRoutesState" class="glass-card rounded-2xl p-8 text-center hidden">
+                    <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-route text-gray-300 text-2xl"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-600 mb-2">暂无用户上传的路线</h3>
+                    <p class="text-gray-500 text-xs mb-4">成为第一个分享者吧！</p>
+                    <button onclick="showUploadModal()" class="btn-primary px-7 py-3 text-white rounded-full text-base font-bold">
+                        <i class="fa-solid fa-upload mr-1"></i>上传路线
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 上传路线弹窗 -->
+    <div id="uploadModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeUploadModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white sticky top-0">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center">
+                        <i class="fa-solid fa-upload mr-3"></i>上传旅游路线
+                    </h3>
+                    <button onclick="closeUploadModal()" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8">
+                <form id="uploadForm" onsubmit="submitRoute(event)">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fa-solid fa-pen mr-2 text-purple-500"></i>路线名称 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="routeName" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-400 transition-all" placeholder="例如：西安3日深度游" required>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fa-solid fa-calendar mr-2 text-purple-500"></i>行程天数 <span class="text-red-500">*</span>
+                            </label>
+                            <select id="routeDays" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-400 transition-all" required>
+                                <option value="">请选择</option>
+                                <option value="1">1日游</option>
+                                <option value="2">2日游</option>
+                                <option value="3">3日游</option>
+                                <option value="4">4日游</option>
+                                <option value="5">5日及以上</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fa-solid fa-users mr-2 text-purple-500"></i>适合人群
+                            </label>
+                            <select id="routeSuit" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-400 transition-all">
+                                <option value="all">不限</option>
+                                <option value="family">家庭游</option>
+                                <option value="couple">情侣游</option>
+                                <option value="friends">朋友出行</option>
+                                <option value="solo">独自旅行</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fa-solid fa-map-pin mr-2 text-purple-500"></i>行程路线 <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="routeContent" rows="5" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-400 transition-all" placeholder="请详细描述您的行程安排，例如：&#10;Day1: 上午 - 秦始皇兵马俑（游览3小时）&#10;        中午 - 回民街午餐&#10;        下午 - 华清池&#10;Day2: ..." required></textarea>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fa-solid fa-coins mr-2 text-purple-500"></i>人均预算
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="routeBudget" class="flex-1 px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-400 transition-all" placeholder="请输入金额" min="0">
+                            <span class="text-gray-500">元/人</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fa-solid fa-comment mr-2 text-purple-500"></i>旅行贴士
+                        </label>
+                        <textarea id="routeTips" rows="3" class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-400 transition-all" placeholder="分享一些您的旅行经验和建议..."></textarea>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fa-solid fa-image mr-2 text-purple-500"></i>上传图片
+                        </label>
+                        <div class="upload-zone rounded-2xl p-8 text-center cursor-pointer" onclick="document.getElementById('routeImages').click()">
+                            <input type="file" id="routeImages" multiple accept="image/*" class="hidden" onchange="handleImageUpload(this)">
+                            <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fa-solid fa-cloud-arrow-up text-purple-400 text-2xl"></i>
+                            </div>
+                            <p class="text-gray-600 mb-2 font-medium">点击或拖拽图片到此处上传</p>
+                            <p class="text-gray-400 text-xs">支持 JPG、PNG 格式，最多上传9张</p>
+                        </div>
+                        <div id="imagePreview" class="grid grid-cols-3 gap-3 mt-4"></div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button type="button" onclick="closeUploadModal()" class="flex-1 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all">
+                            取消
+                        </button>
+                        <button type="submit" class="flex-1 py-4 btn-primary text-white rounded-xl font-medium">
+                            <i class="fa-solid fa-upload mr-2"></i>发布路线
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 路线详情弹窗 -->
+    <div id="routeDetailModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeRouteDetailModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white sticky top-0">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center" id="routeDetailTitle">
+                        <i class="fa-solid fa-route mr-3"></i>路线详情
+                    </h3>
+                    <button onclick="closeRouteDetailModal()" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8" id="routeDetailContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 rounded-b-3xl">
+                <button onclick="closeRouteDetailModal()" class="w-full py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-all">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer-gradient text-white py-16 px-6 mt-16">
+        <div class="container mx-auto text-center">
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-compass text-2xl"></i>
+                </div>
+                <span class="text-2xl font-bold">数智轻行 智游三秦</span>
+            </div>
+            <p class="text-white/80 mb-6">探索陕西之美，从这里开始</p>
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="about.html" class="text-white/70 hover:text-white transition-colors">关于陕西</a>
+                <span class="text-white/30">|</span>
+                <a href="culture.html" class="text-white/70 hover:text-white transition-colors">文化特色</a>
+                <span class="text-white/30">|</span>
+                <a href="attractions.html" class="text-white/70 hover:text-white transition-colors">景点介绍</a>
+                <span class="text-white/30">|</span>
+                <a href="contact.html" class="text-white/70 hover:text-white transition-colors">联系我们</a>
+            </div>
+</div>
+    </footer>
+
+    <div class="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.style.display = mobileMenu.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // 路线指南数据
+        const routeGuides = {
+            oneday: {
+                title: '1日游精华线路',
+                color: 'from-purple-500 to-pink-500',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border-l-4 border-purple-500">
+                            <h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-clock mr-2"></i>行程概览</h4>
+                            <p class="text-gray-700">这是一条经典的西安一日游线路，涵盖世界第八大奇迹——秦始皇兵马俑，以及西安最具代表性的美食街区和夜景。</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6">
+                            <h4 class="font-bold text-blue-600 mb-4 flex items-center text-lg"><i class="fa-solid fa-map mr-2"></i>详细行程</h4>
+                            <div class="space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">1</div>
+                                    <div>
+                                        <h5 class="font-bold text-gray-800">上午：秦始皇兵马俑（8:00-12:00）</h5>
+                                        <p class="text-sm text-gray-600 mt-1">建议早起出发，避开人流高峰。重点参观一号坑，建议请导游讲解。门票150元，需提前预约。</p>
+                                        <div class="flex flex-wrap gap-2 mt-2">
+                                            <span class="px-2 py-1 bg-purple-100 text-purple-600 text-xs rounded-full">游览时长：3-4小时</span>
+                                            <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">建议请导游</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">2</div>
+                                    <div>
+                                        <h5 class="font-bold text-gray-800">中午：回民街午餐（12:00-14:00）</h5>
+                                        <p class="text-sm text-gray-600 mt-1">品尝西安特色美食：肉夹馍、羊肉泡馍、凉皮、biangbiang面等。</p>
+                                        <div class="flex flex-wrap gap-2 mt-2">
+                                            <span class="px-2 py-1 bg-amber-100 text-amber-600 text-xs rounded-full">推荐：老孙家泡馍</span>
+                                            <span class="px-2 py-1 bg-amber-100 text-amber-600 text-xs rounded-full">人均：50-80元</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">3</div>
+                                    <div>
+                                        <h5 class="font-bold text-gray-800">下午：城墙骑行 + 大唐不夜城（14:00-21:00）</h5>
+                                        <p class="text-sm text-gray-600 mt-1">下午可在城墙上骑行（1.5小时），傍晚前往大唐不夜城，感受盛唐夜景。</p>
+                                        <div class="flex flex-wrap gap-2 mt-2">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">城墙门票：54元</span>
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">建议16:00后前往不夜城</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6">
+                            <h4 class="font-bold text-amber-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-lightbulb mr-2"></i>小贴士</h4>
+                            <ul class="text-gray-700 text-sm space-y-2">
+                                <li>• 兵马俑需要提前在官方公众号预约门票</li>
+                                <li>• 建议租用电子讲解器或请导游，否则看不出门道</li>
+                                <li>• 城墙骑行建议租自行车，45元/2小时</li>
+                                <li>• 大唐不夜城的演出晚间开始，建议安排好时间</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            threeday: {
+                title: '3日深度游线路',
+                color: 'from-amber-500 to-orange-500',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border-l-4 border-amber-500">
+                            <h4 class="font-bold text-amber-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-clock mr-2"></i>行程概览</h4>
+                            <p class="text-gray-700">这是一条深度游线路，覆盖西安精华景点、华山登山体验以及延安革命圣地和壶口瀑布，适合时间充裕的游客。</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6">
+                            <h4 class="font-bold text-blue-600 mb-4 flex items-center text-lg"><i class="fa-solid fa-map mr-2"></i>详细行程</h4>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-xl p-4 shadow-sm">
+                                    <h5 class="font-bold text-purple-600 mb-2 flex items-center"><i class="fa-solid fa-1 mr-2"></i>Day 1：西安精华</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• 上午：秦始皇兵马俑（建议3-4小时）</li>
+                                        <li>• 中午：华清池附近午餐</li>
+                                        <li>• 下午：华清池（2小时）</li>
+                                        <li>• 晚上：返回市区，登城墙看夜景</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 shadow-sm">
+                                    <h5 class="font-bold text-orange-600 mb-2 flex items-center"><i class="fa-solid fa-2 mr-2"></i>Day 2：华山登山</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• 早上：乘高铁前往华山（50分钟）</li>
+                                        <li>• 上午：乘坐北峰索道上山</li>
+                                        <li>• 中午：山上简餐</li>
+                                        <li>• 下午：游览东峰、南峰，体验长空栈道</li>
+                                        <li>• 晚上：西峰索道下山，返回西安</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 shadow-sm">
+                                    <h5 class="font-bold text-red-600 mb-2 flex items-center"><i class="fa-solid fa-3 mr-2"></i>Day 3：延安+壶口</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• 早上：乘高铁前往延安（2.5小时）</li>
+                                        <li>• 上午：延安革命纪念馆、枣园</li>
+                                        <li>• 中午：延安午餐，品尝陕北美食</li>
+                                        <li>• 下午：前往壶口瀑布（2小时车程）</li>
+                                        <li>• 晚上：返回或入住延安</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6">
+                            <h4 class="font-bold text-green-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-coins mr-2"></i>费用预算</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white rounded-xl p-4 text-center">
+                                    <div class="text-2xl font-bold text-purple-600">约800元</div>
+                                    <div class="text-xs text-gray-500">Day1费用</div>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 text-center">
+                                    <div class="text-2xl font-bold text-orange-600">约600元</div>
+                                    <div class="text-xs text-gray-500">Day2费用</div>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 text-center">
+                                    <div class="text-2xl font-bold text-red-600">约500元</div>
+                                    <div class="text-xs text-gray-500">Day3费用</div>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 text-center">
+                                    <div class="text-2xl font-bold text-green-600">约1900元</div>
+                                    <div class="text-xs text-gray-500">总计人均</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6">
+                            <h4 class="font-bold text-amber-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-lightbulb mr-2"></i>小贴士</h4>
+                            <ul class="text-gray-700 text-sm space-y-2">
+                                <li>• 华山长空栈道必须提前在官网预约</li>
+                                <li>• 华山登山建议轻装，带足水和干粮</li>
+                                <li>• 壶口瀑布夏季水量最大，景观最美</li>
+                                <li>• 延安红色景区免费，但需预约</li>
+                                <li>• 建议提前预订各段交通和住宿</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        const seasonDetails = {
+            spring: {
+                title: '春季旅游指南',
+                icon: 'fa-sun',
+                color: 'from-green-500 to-emerald-600',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-l-4 border-green-500">
+                            <h4 class="font-bold text-green-600 mb-3"><i class="fa-solid fa-calendar mr-2"></i>春季概况</h4>
+                            <p class="text-gray-700">春季（3-5月）是陕西最适合旅游的季节之一，气温适宜，春暖花开，自然风光最美。</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-green-600 mb-2">推荐景点</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 华山（春暖花开）</li>
+                                    <li>• 大唐不夜城</li>
+                                    <li>• 汉中油菜花海</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-green-600 mb-2">注意事项</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 早晚温差大，带外套</li>
+                                    <li>• 3月仍有沙尘可能</li>
+                                    <li>• 花粉过敏者注意防护</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            summer: {
+                title: '夏季旅游指南',
+                icon: 'fa-temperature-high',
+                color: 'from-yellow-500 to-amber-600',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-2xl p-6 border-l-4 border-yellow-500">
+                            <h4 class="font-bold text-yellow-600 mb-3"><i class="fa-solid fa-calendar mr-2"></i>夏季概况</h4>
+                            <p class="text-gray-700">夏季（6-8月）陕西气温较高，但也是壶口瀑布水量最充沛的季节，景观最为壮观。</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-yellow-600 mb-2">推荐景点</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 壶口瀑布（水量充沛）</li>
+                                    <li>• 太白山（避暑胜地）</li>
+                                    <li>• 室内博物馆</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-yellow-600 mb-2">注意事项</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 注意防晒，多喝水</li>
+                                    <li>• 避开中午高温时段</li>
+                                    <li>• 壶口瀑布带雨衣</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            autumn: {
+                title: '秋季旅游指南',
+                icon: 'fa-leaf',
+                color: 'from-orange-500 to-red-600',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border-l-4 border-orange-500">
+                            <h4 class="font-bold text-orange-600 mb-3"><i class="fa-solid fa-calendar mr-2"></i>秋季概况</h4>
+                            <p class="text-gray-700">秋季（9-11月）是陕西旅游的黄金季节，秋高气爽，最适合参观各类室外景点。</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-orange-600 mb-2">推荐景点</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 兵马俑（秋高气爽）</li>
+                                    <li>• 城墙骑行</li>
+                                    <li>• 法门寺</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-orange-600 mb-2">注意事项</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 9-10月仍有高温</li>
+                                    <li>• 11月开始降温</li>
+                                    <li>• 秋季景色最美</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            winter: {
+                title: '冬季旅游指南',
+                icon: 'fa-snowflake',
+                color: 'from-blue-500 to-indigo-600',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border-l-4 border-blue-500">
+                            <h4 class="font-bold text-blue-600 mb-3"><i class="fa-solid fa-calendar mr-2"></i>冬季概况</h4>
+                            <p class="text-gray-700">冬季（12-2月）陕西气温较低，但室内景点不受影响，是参观博物馆和品尝美食的好时节。</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-blue-600 mb-2">推荐景点</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 历史博物馆（室内）</li>
+                                    <li>• 回民街美食</li>
+                                    <li>• 华清池温泉</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm">
+                                <h5 class="font-bold text-blue-600 mb-2">注意事项</h5>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 室外景点较冷</li>
+                                    <li>• 带上羽绒服</li>
+                                    <li>• 酒店暖气充足</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function showRouteGuide(routeType) {
+            const data = routeGuides[routeType];
+            if (!data) return;
+            
+            const modal = document.getElementById('routeDetailModal');
+            const title = document.getElementById('routeDetailTitle');
+            const content = document.getElementById('routeDetailContent');
+            
+            title.innerHTML = `<i class="fa-solid fa-route mr-3"></i>${data.title}`;
+            content.innerHTML = `<div class="bg-gradient-to-r ${data.color} text-white p-4 rounded-t-2xl -mx-8 -mt-8 mb-6"><h3 class="text-xl font-bold flex items-center"><i class="fa-solid fa-map-location-dot mr-3"></i>${data.title}详细指南</h3></div>` + data.content;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showSeasonDetail(season) {
+            const data = seasonDetails[season];
+            if (!data) return;
+            
+            const modal = document.getElementById('routeDetailModal');
+            const title = document.getElementById('routeDetailTitle');
+            const content = document.getElementById('routeDetailContent');
+            
+            title.innerHTML = `<i class="fa-solid ${data.icon} mr-3"></i>${data.title}`;
+            content.innerHTML = `<div class="bg-gradient-to-r ${data.color} text-white p-4 rounded-t-2xl -mx-8 -mt-8 mb-6"><h3 class="text-xl font-bold flex items-center"><i class="fa-solid ${data.icon} mr-3"></i>${data.title}</h3></div>` + data.content;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        let userRoutes = JSON.parse(localStorage.getItem('shanxi_user_routes') || JSON.stringify([
+            {
+                id: 'route1',
+                name: '西安精华两日游',
+                days: 2,
+                suit: 'all',
+                content: 'Day1:\n• 上午 - 秦始皇兵马俑（建议游览3小时）\n• 中午 - 回民街午餐（推荐老孙家泡馍）\n• 下午 - 华清池（游览2小时）\n• 晚上 - 大唐不夜城\n\nDay2:\n• 上午 - 西安城墙骑行（建议1.5小时）\n• 中午 - 永兴坊午餐\n• 下午 - 陕西历史博物馆\n• 晚上 - 钟鼓楼广场',
+                budget: 800,
+                tips: '建议提前在网上预订门票，避免排队。兵马俑一定要请导游讲解，不然看不出门道。',
+                author: '旅行达人小王',
+                time: Date.now() - 86400000,
+                likes: 56
+            },
+            {
+                id: 'route2',
+                name: '华山登山挑战路线',
+                days: 2,
+                suit: 'friends',
+                content: 'Day1:\n• 早上 - 从西安乘坐高铁前往华山\n• 上午 - 乘坐北峰索道上山\n• 中午 - 北峰午餐\n• 下午 - 游览东峰、南峰\n• 晚上 - 东峰住宿（看日出）\n\nDay2:\n• 清晨 - 东峰观日出\n• 上午 - 长空栈道（需提前预约）\n• 中午 - 西峰午餐\n• 下午 - 西峰索道下山',
+                budget: 600,
+                tips: '长空栈道一定要提前在官网预约！登山时带足水和干粮，山上物价较贵。',
+                author: '户外爱好者',
+                time: Date.now() - 172800000,
+                likes: 89
+            }
+        ]));
+
+        function renderUserRoutes() {
+            const list = document.getElementById('userRoutesList');
+            const emptyState = document.getElementById('emptyRoutesState');
+            
+            if (userRoutes.length === 0) {
+                list.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            list.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            const sortedRoutes = [...userRoutes].sort((a, b) => b.time - a.time).slice(0, 3);
+            
+            list.innerHTML = sortedRoutes.map(route => {
+                const suitLabels = {
+                    all: '不限',
+                    family: '家庭游',
+                    couple: '情侣游',
+                    friends: '朋友出行',
+                    solo: '独自旅行'
+                };
+                
+                return `
+                    <div class="route-card bg-white rounded-3xl shadow-lg overflow-hidden">
+                        <div class="h-36 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                                <i class="fa-solid fa-route text-white text-3xl"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-lg truncate flex-1 gradient-text">${route.name}</h3>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-600 text-xs rounded-full font-medium">${route.days}日游</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                                <span><i class="fa-solid fa-user mr-1"></i>${route.author}</span>
+                                <span><i class="fa-solid fa-clock mr-1"></i>${formatTime(route.time)}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 line-clamp-2 mb-4">${route.content.split('\n')[0].replace('•', '').trim()}</p>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                <span class="text-sm font-medium" style="color: #FF7D00;">
+                                    <i class="fa-solid fa-coins mr-1"></i>约${route.budget || '?'}元/人
+                                </span>
+                                <div class="flex gap-2">
+                                    <button onclick="likeRoute('${route.id}')" class="px-4 py-2 text-xs border border-gray-200 rounded-xl hover:bg-pink-50 transition-colors ${localStorage.getItem(`liked_${route.id}`) === 'true' ? 'bg-pink-50 border-pink-200 text-pink-500' : ''}">
+                                        <i class="fa${localStorage.getItem(`liked_${route.id}`) === 'true' ? 's' : 'r'} fa-heart mr-1"></i>${route.likes}
+                                    </button>
+                                    <button onclick="showRouteDetail('${route.id}')" class="px-4 py-2 btn-primary text-white text-xs rounded-xl">
+                                        查看详情
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            if (days === 0) return '今天';
+            if (days === 1) return '昨天';
+            if (days < 7) return `${days}天前`;
+            return new Date(timestamp).toLocaleDateString('zh-CN');
+        }
+
+        function showUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('uploadForm').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        function handleImageUpload(input) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            if (input.files) {
+                Array.from(input.files).slice(0, 9).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML += `
+                            <div class="relative aspect-square bg-gray-100 rounded-xl overflow-hidden">
+                                <img src="${e.target.result}" class="w-full h-full object-cover">
+                            </div>
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function submitRoute(event) {
+            event.preventDefault();
+            
+            const route = {
+                id: 'route' + Date.now(),
+                name: document.getElementById('routeName').value,
+                days: parseInt(document.getElementById('routeDays').value),
+                suit: document.getElementById('routeSuit').value,
+                content: document.getElementById('routeContent').value,
+                budget: parseInt(document.getElementById('routeBudget').value) || 0,
+                tips: document.getElementById('routeTips').value,
+                author: '匿名用户',
+                time: Date.now(),
+                likes: 0
+            };
+            
+            userRoutes.unshift(route);
+            localStorage.setItem('shanxi_user_routes', JSON.stringify(userRoutes));
+            
+            closeUploadModal();
+            renderUserRoutes();
+            alert('路线发布成功！感谢您的分享！');
+        }
+
+        function showRouteDetail(id) {
+            const route = userRoutes.find(r => r.id === id);
+            if (!route) return;
+            
+            const modal = document.getElementById('routeDetailModal');
+            const title = document.getElementById('routeDetailTitle');
+            const content = document.getElementById('routeDetailContent');
+            
+            const suitLabels = {
+                all: '不限人群',
+                family: '家庭游',
+                couple: '情侣游',
+                friends: '朋友出行',
+                solo: '独自旅行'
+            };
+            
+            title.innerHTML = `<i class="fa-solid fa-route mr-3"></i>${route.name}`;
+            
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <span class="px-4 py-2 bg-purple-100 text-purple-600 text-sm rounded-full font-medium">
+                            <i class="fa-solid fa-calendar mr-2"></i>${route.days}日游
+                        </span>
+                        <span class="px-4 py-2 bg-amber-100 text-amber-600 text-sm rounded-full font-medium">
+                            <i class="fa-solid fa-users mr-2"></i>${suitLabels[route.suit]}
+                        </span>
+                        <span class="px-4 py-2 bg-green-100 text-green-600 text-sm rounded-full font-medium">
+                            <i class="fa-solid fa-coins mr-2"></i>约${route.budget || '?'}元/人
+                        </span>
+                    </div>
+                    
+                    <div class="flex items-center gap-6 text-sm text-gray-500 mb-6">
+                        <span><i class="fa-solid fa-user mr-2"></i>${route.author}</span>
+                        <span><i class="fa-solid fa-clock mr-2"></i>${formatTime(route.time)}</span>
+                        <span><i class="fa-solid fa-heart mr-2 text-pink-500"></i>${route.likes}人收藏</span>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6">
+                        <h4 class="font-bold text-lg gradient-text mb-4 flex items-center">
+                            <i class="fa-solid fa-map mr-3"></i>行程安排
+                        </h4>
+                        <div class="text-gray-700 text-sm whitespace-pre-line leading-relaxed">${route.content}</div>
+                    </div>
+                    
+                    ${route.tips ? `
+                    <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6">
+                        <h4 class="font-bold text-lg mb-4 flex items-center" style="color: #FF7D00;">
+                            <i class="fa-solid fa-lightbulb mr-3"></i>旅行贴士
+                        </h4>
+                        <p class="text-gray-700 text-sm leading-relaxed">${route.tips}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRouteDetailModal() {
+            document.getElementById('routeDetailModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function likeRoute(id) {
+            const route = userRoutes.find(r => r.id === id);
+            if (!route) return;
+            
+            if (localStorage.getItem(`liked_${id}`) === 'true') {
+                return;
+            }
+            
+            route.likes++;
+            localStorage.setItem(`liked_${id}`, 'true');
+            localStorage.setItem('shanxi_user_routes', JSON.stringify(userRoutes));
+            renderUserRoutes();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeUploadModal();
+                closeRouteDetailModal();
+            }
+        });
+
+        renderUserRoutes();
+
+        /* ========== 西安地铁线路图（图片模式）缩放+滑动控制 ========== */
+        let metroScale = 1;
+        let metroImgNaturalWidth = 0, metroImgNaturalHeight = 0;
+
+        function applyMetroZoom() {
+            const img = document.querySelector('.metro-img');
+            if (!img) return;
+            // 图片未加载时跳过（避免 naturalWidth=0 导致尺寸为0）
+            if (!img.complete || img.naturalWidth === 0) return;
+            if (metroImgNaturalWidth === 0) {
+                metroImgNaturalWidth = img.naturalWidth;
+                metroImgNaturalHeight = img.naturalHeight;
+            }
+            const newW = Math.round(metroImgNaturalWidth * metroScale);
+            const newH = Math.round(metroImgNaturalHeight * metroScale);
+            img.style.width = newW + 'px';
+            img.style.height = newH + 'px';
+            const lvl = document.getElementById('metroZoomLevel');
+            if (lvl) lvl.textContent = Math.round(metroScale * 100) + '%';
+        }
+
+        // 图片加载完成后记录原始尺寸并应用初始缩放
+        document.addEventListener('DOMContentLoaded', () => {
+            const metroImg = document.querySelector('.metro-img');
+            if (metroImg) {
+                metroImg.onload = () => {
+                    metroImgNaturalWidth = metroImg.naturalWidth;
+                    metroImgNaturalHeight = metroImg.naturalHeight;
+                    applyMetroZoom();
+                };
+                // 如果已经加载完成则直接初始化
+                if (metroImg.complete && metroImg.naturalWidth > 0) {
+                    metroImgNaturalWidth = metroImg.naturalWidth;
+                    metroImgNaturalHeight = metroImg.naturalHeight;
+                    applyMetroZoom();
+                }
+            }
+        });
+
+        function metroZoom(factor) {
+            metroScale = Math.max(0.5, Math.min(4, metroScale * factor));
+            applyMetroZoom();
+        }
+
+        function metroReset() {
+            metroScale = 1;
+            applyMetroZoom();
+            const area = document.querySelector('.metro-scroll-area');
+            if (area) { area.scrollLeft = 0; area.scrollTop = 0; }
+        }
+    </script>
+</body>
+</html>

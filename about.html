@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于陕西 - 数智轻行 智游三秦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                        accent: '#f093fb'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        html { font-size: 18px; }
+        .hero-gradient { background: transparent; position: relative; overflow: hidden; }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .glow-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .glow-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+        .glow-card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        .glow-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.35);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .info-card { cursor: pointer; transition: all 0.4s ease; }
+        .info-card:hover { transform: translateY(-8px); }
+        .info-card:hover .icon-container {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+        }
+        .icon-container { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .city-card {
+            position: relative; overflow: hidden; transition: all 0.4s ease;
+        }
+        .city-card::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .city-card:hover::after { transform: scaleX(1); }
+        .city-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+        .city-icon { transition: all 0.4s ease; }
+        .city-card:hover .city-icon { transform: scale(1.2); animation: bounce 0.6s ease; }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1.2) translateY(0); }
+            50% { transform: scale(1.2) translateY(-10px); }
+        }
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .float-animation { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .timeline-item { position: relative; padding-left: 30px; }
+        .timeline-item::before {
+            content: '';
+            position: absolute; left: 0; top: 8px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute; left: 5px; top: 24px;
+            width: 2px; height: calc(100% - 16px);
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+        .timeline-item:last-child::after { display: none; }
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+        .city-map-card {
+            transition: all 0.3s ease;
+        }
+        .city-map-card:hover {
+            transform: scale(1.1);
+        }
+        .city-map-card:hover > div:first-child {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen" style="background: url('img/陕西.jpg') center center / cover fixed no-repeat;">
+    <div class="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div>
+    
+    <header class="nav-glass sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-compass text-white text-xl"></i></div>
+                    <div><div class="font-bold text-dark text-lg">数智轻行 智游三秦</div><div class="text-xs text-gray-500">轻量 · 便捷 · 精准</div></div>
+                </a>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="about.html" class="text-sm gradient-text font-bold">关于陕西</a>
+                    <a href="culture.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">文化特色</a>
+                    <a href="attractions.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">美食推荐</a>
+                    <a href="guide.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium">联系我们</a>
+                    <div class="flex items-center gap-3 ml-4">
+                        <a href="auth.html" class="px-5 py-2.5 border-2 border-purple-500 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-50 transition-all">登录</a>
+                        <a href="auth.html" class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all">注册</a>
+                    </div>
+                </nav>
+                <button class="md:hidden text-gray-600" id="mobileMenuBtn"><i class="fa-solid fa-bars text-2xl"></i></button>
+            </div>
+            <nav class="md:hidden mt-4 pb-4 border-t border-gray-100 pt-4" id="mobileMenu" style="display: none;">
+                <div class="flex flex-col gap-3">
+                    <a href="about.html" class="text-sm gradient-text font-bold py-2">关于陕西</a>
+                    <a href="culture.html" class="text-sm text-gray-600 py-2">文化特色</a>
+                    <a href="attractions.html" class="text-sm text-gray-600 py-2">景点介绍</a>
+                    <a href="food.html" class="text-sm text-gray-600 py-2">美食推荐</a>
+                    <a href="guide.html" class="text-sm text-gray-600 py-2">旅游指南</a>
+                    <a href="contact.html" class="text-sm text-gray-600 py-2">联系我们</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero-gradient text-gray-900 py-12 relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <i class="fa-solid fa-landmark mr-3"></i>关于陕西
+            </h1>
+            <p class="text-lg text-gray-600">探索千年古都的历史底蕴 · 感受华夏文明的发源之地</p>
+        </div>
+        <div class="absolute top-10 left-10 w-16 h-16 bg-white/10 rounded-full float-animation"></div>
+        <div class="absolute bottom-5 right-10 w-20 h-20 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
+    </div>
+
+    <main class="container mx-auto px-4 py-10 -mt-6">
+        <!-- 陕西概览 + 辉煌历史 - 30:70 左右分布 -->
+        <div class="mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-[30%_1fr] gap-8 items-start">
+                <!-- 左侧：陕西概览 (30%) -->
+                <div>
+                    <div class="mb-5 text-center">
+                        <span class="inline-block px-5 py-1.5 bg-purple-100 text-purple-600 rounded-full text-xl font-bold mb-2">
+                            <i class="fa-solid fa-circle-info mr-1"></i>陕西概览
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="info-card glow-card glass-card rounded-2xl p-4 text-center" onclick="showBasicInfoModal('geography')">
+                            <div class="icon-container w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                <i class="fa-solid fa-globe-asia text-white text-lg"></i>
+                            </div>
+                            <h3 class="font-bold mb-0.5 text-gray-800 text-sm">地理位置</h3>
+                            <p class="text-gray-600 text-[10px]">西北地区中部</p>
+                        </div>
+                        
+                        <div class="info-card glow-card glass-card rounded-2xl p-4 text-center" onclick="showBasicInfoModal('history')">
+                            <div class="icon-container w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                <i class="fa-solid fa-calendar-days text-white text-lg"></i>
+                            </div>
+                            <h3 class="font-bold mb-0.5 text-gray-800 text-sm">历史沿革</h3>
+                            <p class="text-gray-600 text-[10px]">十三朝古都</p>
+                        </div>
+                        
+                        <div class="info-card glow-card glass-card rounded-2xl p-4 text-center" onclick="showBasicInfoModal('area')">
+                            <div class="icon-container w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                <i class="fa-solid fa-mountain text-white text-lg"></i>
+                            </div>
+                            <h3 class="font-bold mb-0.5 text-gray-800 text-sm">面积</h3>
+                            <p class="text-gray-600 text-[10px]">20.56万km²</p>
+                        </div>
+                        
+                        <div class="info-card glow-card glass-card rounded-2xl p-4 text-center" onclick="showBasicInfoModal('population')">
+                            <div class="icon-container w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                <i class="fa-solid fa-users text-white text-lg"></i>
+                            </div>
+                            <h3 class="font-bold mb-0.5 text-gray-800 text-sm">人口</h3>
+                            <p class="text-gray-600 text-[10px]">约3954万人</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：辉煌历史 (70%) -->
+                <div>
+                    <div class="mb-5 text-center">
+                        <span class="inline-block px-5 py-1.5 bg-pink-100 text-pink-600 rounded-full text-xl font-bold mb-2">
+                            <i class="fa-solid fa-book mr-1"></i>辉煌历史
+                        </span>
+                    </div>
+                    
+                    <div class="glass-card rounded-3xl p-6 shadow-xl">
+                        <p class="text-gray-700 leading-relaxed mb-5">
+                            陕西，简称"陕"或"秦"，是中国中华民族和华夏文明的重要发祥地之一。早在远古时期，"蓝田人"就在这里繁衍生息。这里是炎帝故里、黄帝葬地，是丝绸之路的起点，更是中国古代政治、经济、文化的中心。从西周开始，先后有13个王朝在此建都，历时1100多年。
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-5 border border-blue-100">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-dragon text-white"></i>
+                                    </div>
+                                    <h3 class="font-bold text-gray-800">周·秦崛起</h3>
+                                </div>
+                                <div class="space-y-2 pl-4">
+                                    <div class="timeline-item">
+                                        <p class="font-medium text-sm text-gray-700">周朝发祥地</p>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <p class="font-medium text-sm text-gray-700">秦朝崛起地</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-5 border border-orange-100">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-sun text-white"></i>
+                                    </div>
+                                    <h3 class="font-bold text-gray-800">汉·唐盛世</h3>
+                                </div>
+                                <div class="space-y-2 pl-4">
+                                    <div class="timeline-item">
+                                        <p class="font-medium text-sm text-gray-700">西汉定都长安，开辟丝绸之路</p>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <p class="font-medium text-sm text-gray-700">长安成为世界上最大都市</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+            <!-- 三秦十城 -->
+            <div class="text-center mb-6">
+                <span class="inline-block px-5 py-1.5 bg-orange-100 text-orange-600 rounded-full text-xl font-bold mb-2">
+                    <i class="fa-solid fa-city mr-1"></i>三秦十城
+                </span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4" id="cityCards">
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('xian')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-city text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">西安市</h4><p class="text-xs text-gray-500 mt-1">省会 · 十三朝古都</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('baoji')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-landmark text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">宝鸡市</h4><p class="text-xs text-gray-500 mt-1">青铜器之乡</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('xianyang')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-fuchsia-400 to-fuchsia-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-mosque text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">咸阳市</h4><p class="text-xs text-gray-500 mt-1">秦都汉陵</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('yanan')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-flag text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">延安市</h4><p class="text-xs text-gray-500 mt-1">革命圣地</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('weinan')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-mountain text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">渭南市</h4><p class="text-xs text-gray-500 mt-1">关中粮仓</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('hanzhong')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-tree text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">汉中市</h4><p class="text-xs text-gray-500 mt-1">汉家之源</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('ankang')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-sky-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-water text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">安康市</h4><p class="text-xs text-gray-500 mt-1">秦巴明珠</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('shangluo')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-cloud text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">商洛市</h4><p class="text-xs text-gray-500 mt-1">秦岭最美</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('tongchuan')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-violet-400 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-leaf text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">铜川市</h4><p class="text-xs text-gray-500 mt-1">药王故里</p></div>
+                </div>
+                <div class="city-map-card cursor-pointer" onclick="showCityModal('yulin')">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100 hover:border-purple-300 transition-all h-full">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"><i class="fa-solid fa-warehouse text-white text-lg"></i></div>
+                        <h4 class="font-bold text-gray-800">榆林市</h4><p class="text-xs text-gray-500 mt-1">能源新都</p></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="basicInfoModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeBasicInfoModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 p-6 border-b border-gray-100 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white z-10" id="modalHeader">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center" id="modalTitle">
+                        <i class="fa-solid fa-info-circle mr-3"></i>详情
+                    </h3>
+                    <button onclick="closeBasicInfoModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8" id="modalContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50">
+                <button onclick="closeBasicInfoModal()" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:opacity-90 transition-all shadow-lg">
+                    <i class="fa-solid fa-check mr-2"></i>我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cityModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeCityModal()"></div>
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 p-6 border-b border-gray-100 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white z-10">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold flex items-center" id="cityModalTitle">
+                        <i class="fa-solid fa-city mr-3"></i>城市详情
+                    </h3>
+                    <button onclick="closeCityModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8" id="cityModalContent"></div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50">
+                <button onclick="closeCityModal()" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:opacity-90 transition-all shadow-lg">
+                    <i class="fa-solid fa-check mr-2"></i>我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gradient-to-br from-gray-900 via-slate-900 to-purple-950 text-white py-16 px-6">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-compass text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">数智轻行 智游三秦</h3>
+                            <p class="text-xs text-gray-400">陕西文旅轻量化导航服务平台</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">专为大学生和年轻游客打造的陕西文旅导航平台，带你探索千年古都的历史底蕴。</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-lg">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-chevron-right mr-2 text-purple-400"></i>关于陕西</a></li>
+                        <li><a href="culture.html" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-chevron-right mr-2 text-purple-400"></i>文化特色</a></li>
+                        <li><a href="attractions.html" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-chevron-right mr-2 text-purple-400"></i>景点介绍</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-lg">更多</h4>
+                    <ul class="space-y-2">
+                        <li><a href="guide.html" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-chevron-right mr-2 text-purple-400"></i>旅游指南</a></li>
+                        <li><a href="food.html" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-chevron-right mr-2 text-purple-400"></i>美食推荐</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-chevron-right mr-2 text-purple-400"></i>联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 text-center">
+</div>
+        </div>
+    </footer>
+
+    <div class="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.style.display = mobileMenu.style.display === 'none' ? 'block' : 'none';
+        });
+
+        const basicInfoData = {
+            geography: {
+                title: '地理位置',
+                icon: 'fa-globe-asia',
+                content: `<div class="space-y-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100">
+                        <h4 class="font-bold text-blue-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-map mr-2"></i>地理位置</h4>
+                        <p class="text-gray-700">陕西省位于中国西北地区东部，东临黄河，与山西、河南隔河相望，西邻甘肃、宁夏，南抵四川、重庆、湖北，北接内蒙古。</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+                        <h4 class="font-bold text-green-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-mountain mr-2"></i>地形地貌</h4>
+                        <p class="text-gray-700 mb-3">陕西南北狭长，地势南北高、中间低，分为三大地形区域：</p>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-white rounded-xl p-4 text-center shadow-sm"><div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-hill-avalanche"></i></div><p class="font-bold text-green-700">陕北</p><p class="text-xs text-gray-500">黄土高原</p></div>
+                            <div class="bg-white rounded-xl p-4 text-center shadow-sm"><div class="w-10 h-10 bg-amber-500 text-white rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-field"></i></div><p class="font-bold text-amber-700">关中</p><p class="text-xs text-gray-500">渭河平原</p></div>
+                            <div class="bg-white rounded-xl p-4 text-center shadow-sm"><div class="w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-tree"></i></div><p class="font-bold text-emerald-700">陕南</p><p class="text-xs text-gray-500">秦巴山区</p></div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100">
+                        <h4 class="font-bold text-orange-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-temperature-half mr-2"></i>气候特点</h4>
+                        <p class="text-gray-700">陕西跨北方和南方两大气候区，属温带季风气候和亚热带季风气候过渡带，四季分明。</p>
+                    </div>
+                </div>`
+            },
+            history: {
+                title: '历史沿革',
+                icon: 'fa-calendar-days',
+                content: `<div class="space-y-6">
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
+                        <h4 class="font-bold text-purple-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-clock mr-2"></i>历史地位</h4>
+                        <p class="text-gray-700">陕西是中华民族和华夏文明的重要发祥地之一，历史上共有13个王朝在此建都，是中华文明的摇篮。</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-100">
+                        <h4 class="font-bold text-orange-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-crown mr-2"></i>建都王朝</h4>
+                        <div class="grid grid-cols-4 gap-2 mt-3">
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-red-500">● 西周</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-gray-600">● 秦朝</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-yellow-600">● 西汉</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-orange-600">● 东汉</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-purple-600">● 新莽</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-pink-600">● 西晋</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-blue-600">● 前赵</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-indigo-600">● 前秦</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-green-600">● 后秦</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-teal-600">● 大夏</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-cyan-600">● 西魏</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-amber-600">● 北周</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-rose-600">● 隋朝</div>
+                            <div class="bg-white rounded-lg p-2 text-center shadow-sm text-emerald-600">● 唐朝</div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-6 border border-red-100">
+                        <h4 class="font-bold text-red-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-star mr-2"></i>历史意义</h4>
+                        <p class="text-gray-700">从秦朝统一六国，到汉朝开辟丝绸之路，再到唐朝盛世，陕西见证了中国历史上最辉煌的时期。</p>
+                    </div>
+                </div>`
+            },
+            area: {
+                title: '面积',
+                icon: 'fa-mountain',
+                content: `<div class="space-y-6">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+                        <h4 class="font-bold text-green-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-ruler mr-2"></i>全省面积</h4>
+                        <p class="text-gray-700 text-lg">陕西省总面积 <strong class="text-green-600 text-2xl">20.56万</strong> 平方公里</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 text-center">
+                        <h4 class="font-bold text-blue-600 mb-3 flex items-center justify-center text-lg"><i class="fa-solid fa-chart-simple mr-2"></i>全国排名</h4>
+                        <span class="text-5xl font-bold text-blue-600">第11位</span>
+                        <p class="text-gray-500 mt-2">全国31个省级行政区</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100">
+                        <h4 class="font-bold text-orange-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-arrows-left-right mr-2"></i>区域分布</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between bg-white rounded-lg p-3"><div class="flex items-center gap-2"><div class="w-3 h-3 bg-amber-500 rounded-full"></div><span class="font-medium">陕北</span></div><span class="text-gray-600">约8.4万平方公里</span></div>
+                            <div class="flex items-center justify-between bg-white rounded-lg p-3"><div class="flex items-center gap-2"><div class="w-3 h-3 bg-amber-600 rounded-full"></div><span class="font-medium">关中</span></div><span class="text-gray-600">约4.9万平方公里</span></div>
+                            <div class="flex items-center justify-between bg-white rounded-lg p-3"><div class="flex items-center gap-2"><div class="w-3 h-3 bg-amber-700 rounded-full"></div><span class="font-medium">陕南</span></div><span class="text-gray-600">约7.26万平方公里</span></div>
+                        </div>
+                    </div>
+                </div>`
+            },
+            population: {
+                title: '人口',
+                icon: 'fa-users',
+                content: `<div class="space-y-6">
+                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 text-center">
+                        <h4 class="font-bold text-orange-600 mb-3 flex items-center justify-center text-lg"><i class="fa-solid fa-users mr-2"></i>常住人口</h4>
+                        <span class="text-5xl font-bold text-orange-600">3954</span><span class="text-2xl text-orange-400 ml-2">万人</span>
+                        <p class="text-gray-500 mt-2">截至2023年数据</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100 text-center">
+                        <h4 class="font-bold text-purple-600 mb-3 flex items-center justify-center text-lg"><i class="fa-solid fa-city mr-2"></i>城镇化率</h4>
+                        <span class="text-5xl font-bold text-purple-600">63.5%</span>
+                        <p class="text-gray-500 mt-2">2023年陕西省城镇化率</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+                        <h4 class="font-bold text-blue-600 mb-3 flex items-center text-lg"><i class="fa-solid fa-users-gear mr-2"></i>人口分布</h4>
+                        <div class="space-y-3">
+                            <div class="bg-white rounded-xl p-4 shadow-sm"><div class="flex justify-between items-center mb-2"><span class="font-medium text-gray-700">关中地区</span><span class="text-blue-600 font-bold">60%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full" style="width: 60%"></div></div></div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm"><div class="flex justify-between items-center mb-2"><span class="font-medium text-gray-700">陕北地区</span><span class="text-orange-600 font-bold">25%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-gradient-to-r from-orange-500 to-amber-500 h-2 rounded-full" style="width: 25%"></div></div></div>
+                            <div class="bg-white rounded-xl p-4 shadow-sm"><div class="flex justify-between items-center mb-2"><span class="font-medium text-gray-700">陕南地区</span><span class="text-green-600 font-bold">15%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full" style="width: 15%"></div></div></div>
+                        </div>
+                    </div>
+                </div>`
+            }
+        };
+
+        const cityData = {
+            xian: { name: '西安市', nickname: '省会城市', icon: 'fa-city', area: '10108平方公里', population: '约1300万人', gdp: '约1.2万亿元', description: '西安，古称长安，是中国四大古都之一，世界历史文化名城。先后有周、秦、汉、唐等13个王朝在此建都，是中国历史上建都朝代最多、时间最长的城市。', features: ['世界第八大奇迹秦始皇兵马俑', '中国现存规模最大的古城墙', '丝绸之路的起点', '西北地区最大的城市'], attractions: ['秦始皇兵马俑', '大雁塔', '城墙', '钟鼓楼', '大唐不夜城'], coords: '108.9398,34.3416' },
+            baoji: { name: '宝鸡市', nickname: '青铜器之乡', icon: 'fa-landmark', area: '18117平方公里', population: '约326万人', gdp: '约2800亿元', description: '宝鸡是陕西省第二大城市，古称陈仓，是中华民族重要的发祥地之一。境内出土了大量青铜器，被誉为"青铜器之乡"。', features: ['法门寺佛指舍利', '青铜器博物院', '秦岭主峰太白山', '炎帝陵'], attractions: ['法门寺', '太白山', '青铜器博物院', '炎帝陵'], coords: '107.2377,34.3617' },
+            xianyang: { name: '咸阳市', nickname: '秦都汉陵', icon: 'fa-mosque', area: '10246平方公里', population: '约421万人', gdp: '约2800亿元', description: '咸阳是中国首个封建王朝秦朝的都城所在地，位于八百里秦川腹地，渭水穿南，山水俱阳，故名咸阳。', features: ['秦朝都城', '汉武帝陵墓茂陵', '唐太宗陵墓昭陵', '中国大地原点所在地'], attractions: ['乾陵', '茂陵', '昭陵', '咸阳博物馆'], coords: '108.7091,34.3297' },
+            yanan: { name: '延安市', nickname: '革命圣地', icon: 'fa-flag', area: '37037平方公里', population: '约226万人', gdp: '约2000亿元', description: '延安是中国革命圣地，是毛泽东等老一辈革命家战斗生活了13年的地方，也是中华民族重要的精神象征。', features: ['中国革命圣地', '黄河壶口瀑布', '延安精神发源地', '黄土高原风情'], attractions: ['延安革命纪念馆', '枣园', '宝塔山', '壶口瀑布'], coords: '109.4897,36.5853' },
+            weinan: { name: '渭南市', nickname: '关中粮仓', icon: 'fa-mountain', area: '13030平方公里', population: '约468万人', gdp: '约2200亿元', description: '渭南地处关中平原东部，是陕西的"东大门"，素有"关中粮仓"之美誉，是中国重要的商品粮基地。', features: ['西岳华山', '司马迁祠', '洽川风景区', '关中粮仓'], attractions: ['华山', '司马迁祠', '洽川湿地', '党家村'], coords: '109.5095,34.4994' },
+            hanzhong: { name: '汉中市', nickname: '汉家之源', icon: 'fa-tree', area: '27246平方公里', population: '约321万人', gdp: '约1800亿元', description: '汉中位于陕西南部，北依秦岭，南临巴山，是长江最大支流汉江的发源地，被誉为"汉家之源"。', features: ['两汉三国文化发源地', '朱鹮栖息地', '油菜花海', '秦巴山水'], attractions: ['武侯祠', '石门栈道', '黎坪国家森林公园', '洋县朱鹮保护区'], coords: '106.9515,33.0015' },
+            ankang: { name: '安康市', nickname: '秦巴明珠', icon: 'fa-water', area: '23529平方公里', population: '约247万人', gdp: '约1200亿元', description: '安康位于陕西南部，秦巴腹地，汉水之滨，是南水北调中线工程重要的水源涵养区。', features: ['南水北调水源地', '中国硒谷', '秦巴药库', '休闲养生天堂'], attractions: ['瀛湖', '南宫山', '香溪洞', '中坝大峡谷'], coords: '109.0293,32.6856' },
+            shangluo: { name: '商洛市', nickname: '秦岭最美', icon: 'fa-cloud', area: '19292平方公里', population: '约204万人', gdp: '约900亿元', description: '商洛位于陕西东南部，地处秦岭腹地，因境内有商山、洛水而得名，被誉为"秦岭最美的地方"。', features: ['秦岭生态旅游', '贾平凹故里', '金丝大峡谷', '国家森林城市'], attractions: ['金丝大峡谷', '牛背梁国家森林公园', '天竺山', '柞水溶洞'], coords: '109.9404,33.8703' },
+            tongchuan: { name: '铜川市', nickname: '药王故里', icon: 'fa-leaf', area: '3884平方公里', population: '约70万人', gdp: '约400亿元', description: '铜川位于陕西中部，是唐代医药学家孙思邈的故里，也是西北地区重要的煤炭建材基地。', features: ['药王孙思邈故里', '照金红色旅游', '耀州窑陶瓷', '陈炉古镇'], attractions: ['药王山', '照金薛家寨', '陈炉古镇', '耀州窑博物馆'], coords: '108.9632,34.8972' },
+            yulin: { name: '榆林市', nickname: '能源新都', icon: 'fa-warehouse', area: '43578平方公里', population: '约362万人', gdp: '约6500亿元', description: '榆林位于陕西最北部，是国家级能源化工基地，煤炭、天然气储量丰富，被誉为"中国的科威特"。', features: ['能源化工基地', '大漠风光', '镇北台长城', '红碱淖湿地'], attractions: ['镇北台', '红碱淖', '榆林古城', '波浪谷'], coords: '109.7349,38.2852' }
+        };
+
+        function showBasicInfoModal(type) {
+            const data = basicInfoData[type];
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid ${data.icon} mr-3"></i>${data.title}`;
+            document.getElementById('modalContent').innerHTML = data.content;
+            document.getElementById('basicInfoModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBasicInfoModal() {
+            document.getElementById('basicInfoModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showCityModal(cityCode) {
+            const data = cityData[cityCode];
+            document.getElementById('cityModalTitle').innerHTML = `<i class="fa-solid ${data.icon} mr-3"></i>${data.name}`;
+            let content = `<div class="space-y-6">
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border-l-4 border-purple-500">
+                    <p class="text-gray-700 text-lg">${data.description}</p>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center shadow-sm"><div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-expand"></i></div><div class="text-xs text-gray-500 mb-1">面积</div><div class="font-bold text-blue-600">${data.area}</div></div>
+                    <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 text-center shadow-sm"><div class="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-users"></i></div><div class="text-xs text-gray-500 mb-1">人口</div><div class="font-bold text-orange-600">${data.population}</div></div>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 text-center shadow-sm"><div class="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-chart-line"></i></div><div class="text-xs text-gray-500 mb-1">GDP</div><div class="font-bold text-green-600">${data.gdp}</div></div>
+                </div>
+                <div class="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6 border border-pink-100">
+                    <h4 class="font-bold text-pink-600 mb-3 flex items-center"><i class="fa-solid fa-medal mr-2"></i>城市名片</h4>
+                    <div class="flex flex-wrap gap-2">${data.features.map(f => `<span class="px-4 py-2 bg-white rounded-full text-sm text-pink-700 shadow-sm border border-pink-100 hover:shadow-md transition-shadow">${f}</span>`).join('')}</div>
+                </div>
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100">
+                    <h4 class="font-bold text-yellow-600 mb-3 flex items-center"><i class="fa-solid fa-place-of-worship mr-2"></i>主要景点</h4>
+                    <div class="flex flex-wrap gap-2">${data.attractions.map(a => `<span class="px-4 py-2 bg-white rounded-full text-base font-medium text-yellow-700 shadow-sm border border-yellow-100 hover:shadow-md transition-shadow">${a}</span>`).join('')}</div>
+                </div>
+            </div>`;
+            document.getElementById('cityModalContent').innerHTML = content;
+            document.getElementById('cityModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCityModal() {
+            document.getElementById('cityModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeBasicInfoModal(); closeCityModal(); }
+        });
+
+        // 数据条动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.data-bar');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => { bar.style.width = width; }, 300);
+            });
+        });
+    </script>
+</html>
