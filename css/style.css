@@ -1,0 +1,438 @@
+/* 全局重置与基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+    background: linear-gradient(135deg, #f8f5f0 0%, #e6d8c7 100%);
+    color: #3a2e24;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* 顶部导航栏（仿PPT标题质感） */
+header {
+    background: linear-gradient(90deg, #8b5a2b 0%, #b8860b 50%, #8b5a2b 100%);
+    color: #fff8e1;
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(139, 90, 43, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 248, 225, 0.2), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin-top: 0.3rem;
+}
+
+/* 容器布局 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* 卡片与模块样式（贴合PPT质感） */
+.card, .filter-section, .fee-calculator, .chart-section {
+    background: linear-gradient(160deg, #fff 0%, #f9f5f0 100%);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(139, 90, 43, 0.15);
+    border: 1px solid rgba(184, 134, 11, 0.2);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #d4af37, #b8860b, #d4af37);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+.card:hover, .filter-section:hover, .fee-calculator:hover, .chart-section:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(139, 90, 43, 0.25);
+}
+
+/* 筛选按钮样式（暖金激活态） */
+.filter-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 24px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #e6d8c7;
+    color: #5a3e2b;
+}
+
+.filter-btn.active-filter {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(184, 134, 11, 0.3);
+}
+
+.filter-btn:hover:not(.active-filter) {
+    background: #d9c7b8;
+    transform: scale(1.05);
+}
+
+/* 搜索框与输入框 */
+input {
+    border: 1px solid rgba(139, 90, 43, 0.3);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+input:focus {
+    outline: none;
+    border-color: #b8860b;
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+}
+
+/* 按钮样式（暖金主按钮） */
+.btn-primary {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    border-radius: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(184, 134, 11, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(184, 134, 11, 0.35);
+}
+
+.btn-secondary {
+    background: #e6d8c7;
+    color: #5a3e2b;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #d9c7b8;
+    transform: scale(1.05);
+}
+
+/* 景点卡片图片容器（16:9比例+动态效果） */
+.card-img-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    overflow: hidden;
+}
+
+.card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card:hover .card-img {
+    transform: scale(1.1);
+}
+
+/* 简介文字截断 */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 收藏按钮（暖红激活态） */
+.collect-btn {
+    background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
+    color: #fff;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.collect-btn:hover {
+    background: linear-gradient(135deg, #a0522d 0%, #8b4513 100%);
+    transform: scale(1.05);
+}
+
+.collect-btn.bg-red-500 {
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+}
+
+/* Toast提示框（暖棕质感） */
+.toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #5a3e2b 0%, #3a2e24 100%);
+    color: #fff8e1;
+    padding: 0.8rem 1.4rem;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(58, 46, 36, 0.4);
+    z-index: 9999;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    opacity: 0;
+    transform: translateY(-20px);
+    font-size: 0.9rem;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 费用计算器数字动画 */
+#totalFee {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #b8860b;
+    transition: all 0.3s ease;
+}
+
+/* 图表容器（适配暖金风格） */
+#tourismChart {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* 底部样式 */
+footer {
+    background: linear-gradient(90deg, #3a2e24 0%, #5a3e2b 50%, #3a2e24 100%);
+    color: #e6d8c7;
+    padding: 1.2rem 0;
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    .card-img-container {
+        padding-top: 62.5%; /* 手机端稍高比例 */
+    }
+}
+
+/* 图片轮播容器（顶部展示区）- 核心修改：自适应尺寸 */
+.banner-carousel {
+    width: 100%; /* 宽度100%自适应容器/屏幕 */
+    /* 移除固定高度，改用aspect-ratio实现16:9比例适配 */
+    aspect-ratio: 16 / 9; 
+    position: relative;
+    overflow: hidden;
+    margin: 2rem 0;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(139, 90, 43, 0.25);
+    border: 1px solid rgba(184, 134, 11, 0.2);
+    /* 兼容低版本浏览器：备用高度方案 */
+    min-height: 200px;
+}
+
+/* 无缝滚动核心：修改轮播容器为弹性无限滚动 */
+.carousel-wrapper {
+    width: 100%;
+    height: 100%; /* 高度100%继承容器 */
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateX(0);
+}
+
+/* 轮播单张图片 - 新增flex-shrink:0确保宽度固定 */
+.carousel-item {
+    flex: 0 0 100%; /* 宽度100%继承容器 */
+    width: 100%;
+    height: 100%; /* 高度100%继承容器 */
+    position: relative;
+    flex-shrink: 0; /* 防止压缩 */
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保持比例填充容器 */
+    object-position: center;
+}
+
+/* 轮播文字遮罩（适配自适应尺寸） */
+.carousel-item .carousel-mask {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    /* 内边距改用相对单位vw，适配不同屏幕 */
+    padding: clamp(1rem, 2vw, 2rem); 
+    background: linear-gradient(transparent, rgba(58, 46, 36, 0.8));
+    color: #fff8e1;
+}
+
+.carousel-item .carousel-title {
+    /* 字体大小用clamp自适应：最小1.2rem，最大1.8rem，中间按vw比例 */
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-item .carousel-desc {
+    /* 字体大小自适应 */
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    opacity: 0.9;
+    max-width: 800px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 轮播切换按钮（适配自适应尺寸） */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* 按钮尺寸用vw+px混合，兼顾大屏和小屏 */
+    width: clamp(40px, 5vw, 50px);
+    height: clamp(40px, 5vw, 50px);
+    border-radius: 50%;
+    background: rgba(255, 248, 225, 0.8);
+    color: #8b5a2b;
+    border: none;
+    /* 图标大小自适应 */
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* 按钮位置自适应，避免贴边 */
+    margin: 0 clamp(10px, 1vw, 20px);
+}
+
+.carousel-btn:hover {
+    background: #d4af37;
+    color: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev {
+    left: 0; /* 移除固定px，改为0 + margin */
+}
+
+.carousel-btn.next {
+    right: 0; /* 移除固定px，改为0 + margin */
+}
+
+/* 轮播指示器（适配自适应尺寸） */
+.carousel-indicators {
+    position: absolute;
+    bottom: clamp(10px, 2vw, 20px); /* 底部距离自适应 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: clamp(8px, 1vw, 10px); /* 间距自适应 */
+    z-index: 10;
+}
+
+.indicator-dot {
+    /* 圆点尺寸自适应 */
+    width: clamp(10px, 1.2vw, 12px);
+    height: clamp(10px, 1.2vw, 12px);
+    border-radius: 50%;
+    background: rgba(255, 248, 225, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator-dot.active {
+    background: #d4af37;
+    /* 激活态宽度自适应 */
+    width: clamp(20px, 3vw, 30px);
+    border-radius: 6px;
+}
+
+/* 响应式适配（优化） */
+@media (max-width: 768px) {
+    .banner-carousel {
+        /* 移动端可调整比例，比如4:3 */
+        aspect-ratio: 4 / 3;
+        min-height: 180px;
+    }
+    /* 移动端按钮更小 */
+    .carousel-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+/* 额外适配：超小屏（手机竖屏） */
+@media (max-width: 480px) {
+    .banner-carousel {
+        aspect-ratio: 3 / 2;
+    }
+    .indicator-dot.active {
+        width: 24px; /* 超小屏激活态圆点稍窄 */
+    }
+}
